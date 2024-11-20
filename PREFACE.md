@@ -69,7 +69,7 @@ This book focuses on the art of reverse engineering, so a certain level of compu
 
 ## How to Contact Us
 
-For additional information, updates, or support related to this book, please visit our webpage: 
+For additional information, updates, or support related to this book, please visit our webpage (hosted via github pages): **NOT YET AVAILABLE**
 
 Email [immadmohit@gmail.com](mailto:immadmohit@gmail.com) to comment or ask technical questions about this book.
 
