@@ -1,6 +1,8 @@
 # Inside the Machine: A Practical Approach to Reverse Engineering for Developers
 
-This book serves as a comprehensive guide to the art of reverse engineering. It explores various techniques and strategies to extract valuable insights from software systems, with the goal of enhancing understanding, improving software quality, and addressing complex challenges.
+> **Note:** This book will be just dump of what i know and what i feel like should be known by others
+
+This book serves as a guide to the art of reverse engineering. It explores various techniques and strategies to extract valuable insights from software systems, with the goal of enhancing understanding, improving software quality, and addressing complex challenges.
 
 ## Table of Contents
 
@@ -37,9 +39,13 @@ This book serves as a comprehensive guide to the art of reverse engineering. It 
 
 [PREFACE.md](PREFACE.md)
 
+## License
+
+This repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## How to Contact Us
 
-For additional information, updates, or support related to this book, please visit our webpage:
+For additional information, updates, or support related to this book, please visit the webpage (hosted via github pages): **NOT YET AVAILABLE**
 
 Email [immadmohit@gmail.com](mailto:immadmohit@gmail.com) to comment or ask technical questions about this book.
 
