@@ -65,7 +65,7 @@ Part 6: **Future of Reverse Engineering**
 
 ## References and Further Reading
 
-This book focuses on the art of reverse engineering, so a certain level of computer science background is recommended. To support understanding and maintain continuity, key terminology is included in the "Glossary" section of the appendix.
+This book focuses on the art of reverse engineering, so a certain level of computer science background is recommended. To support understanding and maintain continuity, key terminology will be included in the "Glossary" section of the appendix.
 
 ## How to Contact Us
 
