@@ -5,49 +5,65 @@ echo "Preparing site for GitHub Pages..."
 # Step 1: Fix chapter front matter
 echo "Step 1: Fixing chapter front matter..."
 
-# Fix YAML front matter in chapter files
-for file in _chapters/chapter-*.md; do
-  if [ -f "$file" ]; then
-    echo "  Processing $file..."
-    # Create a temporary file
-    tmp_file="${file}.tmp"
-    
-    # Process the file line by line
-    in_frontmatter=false
-    frontmatter_start=false
-    
-    while IFS= read -r line; do
-      # Detect front matter boundaries
-      if [[ "$line" == "---" ]]; then
-        if [ "$in_frontmatter" = false ] && [ "$frontmatter_start" = false ]; then
-          in_frontmatter=true
-          frontmatter_start=true
-        elif [ "$in_frontmatter" = true ]; then
-          in_frontmatter=false
-        fi
-      fi
+# Fix YAML front matter in chapter files using Ruby
+if [ -f "fix_all_frontmatter.rb" ]; then
+  echo "  Running fix_all_frontmatter.rb script..."
+  ruby fix_all_frontmatter.rb
+elif [ -f "fix_chapter_frontmatter.rb" ]; then
+  echo "  Running fix_chapter_frontmatter.rb script..."
+  ruby fix_chapter_frontmatter.rb
+else
+  # Fix YAML front matter in chapter files
+  for file in _chapters/chapter-*.md; do
+    if [ -f "$file" ]; then
+      echo "  Processing $file..."
+      # Create a temporary file
+      tmp_file="${file}.tmp"
       
-      # Fix title and part lines in front matter
-      if [ "$in_frontmatter" = true ]; then
-        if [[ "$line" =~ ^title:\ (.*):(.*)$ ]]; then
-          # Title contains a colon, wrap in quotes
-          title="${BASH_REMATCH[1]}:${BASH_REMATCH[2]}"
-          line="title: \"$title\""
-        elif [[ "$line" =~ ^part:\ (.*):(.*)$ ]]; then
-          # Part contains a colon, wrap in quotes
-          part="${BASH_REMATCH[1]}:${BASH_REMATCH[2]}"
-          line="part: \"$part\""
-        fi
-      fi
+      # Process the file
+      awk '
+      BEGIN { in_frontmatter=0; has_frontmatter=0; }
+      /^---$/ { 
+        if (in_frontmatter == 0) {
+          in_frontmatter=1; 
+          has_frontmatter=1;
+          print "---";
+          next;
+        } else {
+          in_frontmatter=0;
+          print "---";
+          next;
+        }
+      }
       
-      # Write the line to the temporary file
-      echo "$line" >> "$tmp_file"
-    done < "$file"
-    
-    # Replace the original file with the fixed one
-    mv "$tmp_file" "$file"
-  fi
-done
+      # Inside frontmatter, handle title and part with colons
+      in_frontmatter == 1 && /^title:/ {
+        if ($0 ~ /:.*:/) {
+          title=$0;
+          sub(/^title: /, "", title);
+          print "title: \"" title "\"";
+          next;
+        }
+      }
+      
+      in_frontmatter == 1 && /^part:/ {
+        if ($0 ~ /:.*:/) {
+          part=$0;
+          sub(/^part: /, "", part);
+          print "part: \"" part "\"";
+          next;
+        }
+      }
+      
+      # Print all other lines
+      { print }
+      ' "$file" > "$tmp_file"
+      
+      # Replace the original file with the fixed one
+      mv "$tmp_file" "$file"
+    fi
+  done
+fi
 
 # Step 2: Clean up template and sample chapters
 echo "Step 2: Cleaning up template and sample chapters..."
@@ -152,12 +168,18 @@ if [ -f "_config.yml" ]; then
   if ! grep -q "^baseurl:" "_config.yml"; then
     echo "baseurl: '/inside-the-machine'" >> "_config.yml"
     echo "  Added baseurl to _config.yml"
+  elif grep -q "^baseurl: \"\"" "_config.yml"; then
+    sed -i 's/^baseurl: ""/baseurl: "\/inside-the-machine"/' "_config.yml"
+    echo "  Updated baseurl in _config.yml"
   fi
   
   # Check if url is set correctly
   if ! grep -q "^url:" "_config.yml"; then
     echo "url: 'https://mohitmishra786.github.io'" >> "_config.yml"
     echo "  Added url to _config.yml"
+  elif grep -q "inside-the-machine" "_config.yml" && grep -q "^url:"; then
+    sed -i 's/^url: "https:\/\/mohitmishra786.github.io\/inside-the-machine"/url: "https:\/\/mohitmishra786.github.io"/' "_config.yml"
+    echo "  Fixed url in _config.yml"
   fi
 else
   echo "  Warning: _config.yml not found"
