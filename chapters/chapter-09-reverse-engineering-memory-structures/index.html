@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inside the Machine | A Practical Approach to Reverse Engineering for Developers</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Inside the Machine" />
+<meta name="author" content="Mohit Mishra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<meta property="og:description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<link rel="canonical" href="https://mohitmishra786.github.io/inside-the-machine/chapters/chapter-09-reverse-engineering-memory-structures/" />
+<meta property="og:url" content="https://mohitmishra786.github.io/inside-the-machine/chapters/chapter-09-reverse-engineering-memory-structures/" />
+<meta property="og:site_name" content="Inside the Machine" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-04-27T18:19:26+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Inside the Machine" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mohit Mishra"},"dateModified":"2025-04-27T18:19:26+00:00","datePublished":"2025-04-27T18:19:26+00:00","description":"A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.","headline":"Inside the Machine","mainEntityOfPage":{"@type":"WebPage","@id":"https://mohitmishra786.github.io/inside-the-machine/chapters/chapter-09-reverse-engineering-memory-structures/"},"url":"https://mohitmishra786.github.io/inside-the-machine/chapters/chapter-09-reverse-engineering-memory-structures/"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <a href="/" class="site-title">Inside the Machine</a>
+    
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+      <label for="nav-trigger">
+        <span class="menu-icon">
+          <svg viewBox="0 0 18 15" width="18px" height="15px">
+            <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+          </svg>
+        </span>
+      </label>
+
+      <div class="trigger">
+        <a class="page-link" href="/chapters">Chapters</a>
+        <a class="page-link" href="/about">About</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+  
+  <main class="container">
+    <article class="chapter">
+  <header class="chapter-header">
+    <h1></h1>
+    
+  </header>
+
+  <div class="chapter-content">
+    <p><em>Part 3: Dynamic Analysis</em></p>
+
+<p>Understanding how programs organize and use memory is fundamental to reverse engineering. Memory structures reveal the architecture of a program, its data flow, and often its underlying algorithms. This chapter explores techniques for identifying, analyzing, and manipulating memory structures during dynamic analysis, providing insights that static analysis alone cannot reveal.</p>
+
+<h2 id="memory-organization-fundamentals">Memory Organization Fundamentals</h2>
+
+<p>Before diving into reverse engineering techniques, let’s review how programs organize memory and the structures they commonly use.</p>
+
+<h3 id="process-memory-layout">Process Memory Layout</h3>
+
+<p>Modern operating systems divide a process’s virtual address space into distinct regions:</p>
+
+<h4 id="windows-memory-regions">Windows Memory Regions</h4>
+
+<ul>
+  <li><strong>Image</strong>: Contains the executable code and static data (.text, .data, .rdata sections)</li>
+  <li><strong>Heap</strong>: Dynamically allocated memory managed by the heap manager</li>
+  <li><strong>Stack</strong>: Local variables and function call information</li>
+  <li><strong>Mapped files</strong>: Shared libraries (DLLs) and memory-mapped files</li>
+  <li><strong>Private memory</strong>: Process-specific allocations via VirtualAlloc</li>
+</ul>
+
+<h4 id="linuxunix-memory-regions">Linux/Unix Memory Regions</h4>
+
+<ul>
+  <li><strong>Text segment</strong>: Read-only executable code</li>
+  <li><strong>Data segment</strong>: Initialized global and static variables</li>
+  <li><strong>BSS segment</strong>: Uninitialized global and static variables</li>
+  <li><strong>Heap</strong>: Dynamic memory allocations via malloc/brk</li>
+  <li><strong>Memory mappings</strong>: Shared libraries and mmap allocations</li>
+  <li><strong>Stack</strong>: Function call frames and local variables</li>
+</ul>
+
+<p>Understanding these regions helps focus your analysis on the most relevant areas:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Examining memory regions in GDB (Linux)
+(gdb) info proc mappings
+
+# Examining memory regions in WinDbg (Windows)
+!address
+</code></pre></div></div>
+
+<h3 id="common-memory-structures">Common Memory Structures</h3>
+
+<p>Programs use various structures to organize data in memory:</p>
+
+<h4 id="primitive-data-types">Primitive Data Types</h4>
+
+<p>The building blocks of more complex structures:</p>
+
+<ul>
+  <li><strong>Integers</strong>: 8, 16, 32, or 64-bit values (signed or unsigned)</li>
+  <li><strong>Floating-point numbers</strong>: Single or double precision</li>
+  <li><strong>Characters</strong>: ASCII, Unicode (UTF-8, UTF-16, etc.)</li>
+  <li><strong>Booleans</strong>: True/false values (often represented as integers)</li>
+  <li><strong>Pointers</strong>: Memory addresses (32 or 64-bit depending on architecture)</li>
+</ul>
+
+<h4 id="composite-structures">Composite Structures</h4>
+
+<p>Combinations of primitive types and other structures:</p>
+
+<ul>
+  <li><strong>Arrays</strong>: Contiguous elements of the same type</li>
+  <li><strong>Structures/Records</strong>: Collections of fields of different types</li>
+  <li><strong>Unions</strong>: Overlapping fields sharing the same memory</li>
+  <li><strong>Classes</strong>: Structures with associated methods (in object-oriented languages)</li>
+</ul>
+
+<h4 id="dynamic-structures">Dynamic Structures</h4>
+
+<p>Structures that grow or shrink during execution:</p>
+
+<ul>
+  <li><strong>Linked lists</strong>: Nodes connected by pointers</li>
+  <li><strong>Trees</strong>: Hierarchical structures with parent-child relationships</li>
+  <li><strong>Graphs</strong>: Networks of nodes with arbitrary connections</li>
+  <li><strong>Hash tables</strong>: Arrays of buckets containing key-value pairs</li>
+  <li><strong>Dynamic arrays</strong>: Resizable arrays (vectors, ArrayLists, etc.)</li>
+</ul>
+
+<h2 id="identifying-memory-structures">Identifying Memory Structures</h2>
+
+<p>When reverse engineering, you’ll need to identify these structures without source code or documentation.</p>
+
+<h3 id="pattern-recognition">Pattern Recognition</h3>
+
+<p>Certain patterns in memory indicate specific structure types:</p>
+
+<h4 id="pointer-patterns">Pointer Patterns</h4>
+
+<p>Sequences of valid memory addresses often indicate linked structures:</p>
+
+<ul>
+  <li><strong>Linked lists</strong>: A chain of pointers where each points to the next node</li>
+  <li><strong>Trees</strong>: Nodes containing multiple pointers to child nodes</li>
+  <li><strong>Virtual method tables (vtables)</strong>: Arrays of function pointers</li>
+</ul>
+
+<p>Example pattern for a doubly-linked list:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Node1: [prev=NULL, next=addr2, data=...]
+Node2: [prev=addr1, next=addr3, data=...]
+Node3: [prev=addr2, next=NULL, data=...]
+</code></pre></div></div>
+
+<h4 id="size-and-count-fields">Size and Count Fields</h4>
+
+<p>Many structures include metadata about their contents:</p>
+
+<ul>
+  <li><strong>Arrays</strong>: Often preceded by a length field</li>
+  <li><strong>Strings</strong>: Usually include or end with a length or terminator</li>
+  <li><strong>Collections</strong>: Frequently contain count and capacity fields</li>
+</ul>
+
+<p>Example pattern for a dynamic array:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Vector: [count=3, capacity=8, data_ptr=addr1]
+addr1: [element1, element2, element3, unused, unused, ...]
+</code></pre></div></div>
+
+<h4 id="type-signatures">Type Signatures</h4>
+
+<p>Programs often include type information in their structures:</p>
+
+<ul>
+  <li><strong>Magic numbers</strong>: Constant values identifying a structure type</li>
+  <li><strong>Type fields</strong>: Enumerated values indicating the object type</li>
+  <li><strong>Size fields</strong>: Values matching the structure’s memory footprint</li>
+</ul>
+
+<p>Example of a type signature in a file format header:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Header: [magic="PNG\r\n\x1A\n", width=1024, height=768, ...]
+</code></pre></div></div>
+
+<h3 id="memory-access-patterns">Memory Access Patterns</h3>
+
+<p>Observing how code accesses memory reveals structure organization:</p>
+
+<h4 id="array-access">Array Access</h4>
+
+<p>Array access typically involves:</p>
+
+<ol>
+  <li>A base address</li>
+  <li>An index calculation (index * element_size)</li>
+  <li>Accessing the calculated address</li>
+</ol>
+
+<p>In assembly, this often looks like:</p>
+<pre><code class="language-assembly">; Accessing array[i] where each element is 4 bytes
+mov eax, [base_addr + ecx*4]  ; ecx contains the index
+</code></pre>
+
+<h4 id="structure-field-access">Structure Field Access</h4>
+
+<p>Accessing structure fields involves fixed offsets from a base address:</p>
+
+<pre><code class="language-assembly">; Accessing fields of a structure at address in ebx
+mov eax, [ebx]        ; First field (offset 0)
+mov ecx, [ebx + 8]    ; Field at offset 8
+mov edx, [ebx + 16]   ; Field at offset 16
+</code></pre>
+
+<p>By tracking these offsets, you can reconstruct the structure layout.</p>
+
+<h4 id="linked-structure-traversal">Linked Structure Traversal</h4>
+
+<p>Traversing linked structures involves loading a pointer and following it:</p>
+
+<pre><code class="language-assembly">; Traversing a linked list
+mov ebx, [list_head]  ; Load first node address
+loop_start:
+test ebx, ebx         ; Check if pointer is NULL
+jz loop_end           ; Exit if end of list
+; Process node data
+mov eax, [ebx + 8]    ; Access node data field
+; Move to next node
+mov ebx, [ebx]        ; Load next pointer
+jmp loop_start        ; Continue traversal
+loop_end:
+</code></pre>
+
+<h3 id="heap-analysis">Heap Analysis</h3>
+
+<p>The heap contains most dynamic structures and is a rich source of information:</p>
+
+<h4 id="heap-block-metadata">Heap Block Metadata</h4>
+
+<p>Heap allocators add metadata to each allocation:</p>
+
+<ul>
+  <li><strong>Block size</strong>: The size of the allocated block</li>
+  <li><strong>Status flags</strong>: Whether the block is allocated or free</li>
+  <li><strong>Adjacent block pointers</strong>: Links to nearby blocks</li>
+</ul>
+
+<p>This metadata helps identify the boundaries of objects:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># WinDbg heap block examination
+!heap -p -a 0x00d45678  ; Examine block at address
+</code></pre></div></div>
+
+<h4 id="allocation-tracking">Allocation Tracking</h4>
+
+<p>Monitoring memory allocations reveals structure creation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Setting breakpoints on allocation functions in GDB
+break malloc
+command
+  printf "malloc(%d) = %p\n", $rdi, $rax
+  continue
+end
+</code></pre></div></div>
+
+<p>Key information to track:</p>
+<ul>
+  <li><strong>Allocation size</strong>: Indicates the structure size</li>
+  <li><strong>Allocation patterns</strong>: Sequences revealing container growth</li>
+  <li><strong>Deallocation order</strong>: Shows object lifetime and relationships</li>
+</ul>
+
+<h2 id="analyzing-complex-structures">Analyzing Complex Structures</h2>
+
+<p>Once you’ve identified basic structures, you can analyze more complex arrangements.</p>
+
+<h3 id="reconstructing-structure-definitions">Reconstructing Structure Definitions</h3>
+
+<p>Create C-style struct definitions to document your findings:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Example reconstructed structure</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_Node</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">_Node</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>     <span class="c1">// Offset 0x00</span>
+    <span class="k">struct</span> <span class="n">_Node</span><span class="o">*</span> <span class="n">prev</span><span class="p">;</span>     <span class="c1">// Offset 0x08</span>
+    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>                 <span class="c1">// Offset 0x10</span>
+    <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>          <span class="c1">// Offset 0x14</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>             <span class="c1">// Offset 0x34</span>
+    <span class="kt">int</span> <span class="n">data_size</span><span class="p">;</span>          <span class="c1">// Offset 0x3C</span>
+<span class="p">}</span> <span class="n">Node</span><span class="p">;</span>  <span class="c1">// Total size: 0x40 (64) bytes</span>
+</code></pre></div></div>
+
+<p>Tools like WinDbg’s <code class="language-plaintext highlighter-rouge">dt</code> command can help visualize these structures:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define and use a structure in WinDbg
+.struct Node
++0x00 next : Ptr64 Node
++0x08 prev : Ptr64 Node
++0x10 id : Int4B
++0x14 name : [32] UChar
++0x34 data : Ptr64 Void
++0x3c data_size : Int4B
+
+# Use the structure to format memory
+dt Node 0x00d45678
+</code></pre></div></div>
+
+<h3 id="object-oriented-structures">Object-Oriented Structures</h3>
+
+<p>Object-oriented programs use additional structures:</p>
+
+<h4 id="virtual-method-tables-vtables">Virtual Method Tables (vtables)</h4>
+
+<p>Vtables are arrays of function pointers implementing polymorphism:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Object: [vtable_ptr=0x401000, field1, field2, ...]
+0x401000 (vtable): [method1_addr, method2_addr, method3_addr, ...]
+</code></pre></div></div>
+
+<p>Identifying vtables helps understand class hierarchies:</p>
+
+<ol>
+  <li>Look for pointers to code sections at the beginning of objects</li>
+  <li>Follow these pointers to find tables of function pointers</li>
+  <li>Analyze the functions to determine their purpose</li>
+</ol>
+
+<h4 id="inheritance-relationships">Inheritance Relationships</h4>
+
+<p>Derived classes typically embed their parent class structure:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BaseClass: [vtable_ptr, base_field1, base_field2]
+DerivedClass: [vtable_ptr, base_field1, base_field2, derived_field1, ...]
+</code></pre></div></div>
+
+<p>To identify inheritance:</p>
+
+<ol>
+  <li>Compare object layouts to find common prefixes</li>
+  <li>Look for vtable similarities (derived classes often extend the parent’s vtable)</li>
+  <li>Analyze how objects are used interchangeably in the code</li>
+</ol>
+
+<h3 id="container-classes">Container Classes</h3>
+
+<p>Modern programs use standard container implementations:</p>
+
+<h4 id="standard-template-library-c">Standard Template Library (C++)</h4>
+
+<p>C++ STL containers have recognizable memory patterns:</p>
+
+<ul>
+  <li><strong>std::vector</strong>: [size, capacity, data_pointer]</li>
+  <li><strong>std::list</strong>: Doubly-linked nodes with next/prev pointers</li>
+  <li><strong>std::map/std::set</strong>: Red-black trees with parent/child pointers and color flags</li>
+  <li><strong>std::unordered_map</strong>: Hash table with buckets and linked nodes</li>
+</ul>
+
+<h4 id="java-collections">Java Collections</h4>
+
+<p>Java collection classes have their own patterns:</p>
+
+<ul>
+  <li><strong>ArrayList</strong>: Object header, size field, capacity field, element array</li>
+  <li><strong>LinkedList</strong>: Object header with references to first/last nodes</li>
+  <li><strong>HashMap</strong>: Object header, buckets array, size fields, load factor</li>
+</ul>
+
+<h3 id="string-representations">String Representations</h3>
+
+<p>Strings have various representations depending on the language and encoding:</p>
+
+<h4 id="c-style-strings">C-style Strings</h4>
+
+<p>Null-terminated character arrays:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Hello" = [48 65 6C 6C 6F 00] (ASCII)
+</code></pre></div></div>
+
+<h4 id="length-prefixed-strings">Length-Prefixed Strings</h4>
+
+<p>Strings with explicit length information:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Hello" = [05 00 00 00 48 65 6C 6C 6F] (32-bit length + ASCII)
+</code></pre></div></div>
+
+<h4 id="object-based-strings">Object-Based Strings</h4>
+
+<p>Strings as objects with metadata:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>String object: [vtable_ptr, length=5, capacity=8, data_ptr]
+data_ptr: [48 65 6C 6C 6F ...] ("Hello")
+</code></pre></div></div>
+
+<h4 id="unicode-strings">Unicode Strings</h4>
+
+<p>Multi-byte character representations:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Hello" in UTF-16LE = [48 00 65 00 6C 00 6C 00 6F 00 00 00]
+</code></pre></div></div>
+
+<h2 id="memory-structure-manipulation">Memory Structure Manipulation</h2>
+
+<p>Once you understand memory structures, you can manipulate them to alter program behavior.</p>
+
+<h3 id="direct-memory-modification">Direct Memory Modification</h3>
+
+<p>Changing values in memory can modify program state:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Modifying a structure field in GDB
+set {int}0x7fffffffe890 = 42
+
+# Modifying a string in WinDbg
+edit -a 0x00d45678 "New string value"
+</code></pre></div></div>
+
+<p>Common modifications include:</p>
+<ul>
+  <li><strong>Flag toggles</strong>: Changing boolean values to enable/disable features</li>
+  <li><strong>Counter manipulation</strong>: Altering count fields to bypass limits</li>
+  <li><strong>Pointer redirection</strong>: Changing pointers to reference different objects</li>
+  <li><strong>Data replacement</strong>: Substituting sensitive data with modified values</li>
+</ul>
+
+<h3 id="structure-injection">Structure Injection</h3>
+
+<p>Creating new structures in memory extends program functionality:</p>
+
+<ol>
+  <li><strong>Allocate memory</strong>: Find or create space for the new structure</li>
+  <li><strong>Construct the structure</strong>: Fill the memory with appropriate values</li>
+  <li><strong>Link into existing structures</strong>: Update pointers to include your structure</li>
+</ol>
+
+<p>Example: Injecting a new node into a linked list</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Original list: A -&gt; B -&gt; C
+
+# 1. Allocate memory for new node D
+new_node = malloc(sizeof(Node))
+
+# 2. Construct the node
+new_node-&gt;data = "Injected Data"
+new_node-&gt;next = B_node_addr
+new_node-&gt;prev = A_node_addr
+
+# 3. Link into the list
+A_node-&gt;next = new_node
+B_node-&gt;prev = new_node
+
+# Result: A -&gt; D -&gt; B -&gt; C
+</code></pre></div></div>
+
+<h3 id="hooking-object-methods">Hooking Object Methods</h3>
+
+<p>Replacing methods in vtables allows intercepting object behavior:</p>
+
+<ol>
+  <li><strong>Identify the vtable</strong>: Find the object’s vtable pointer</li>
+  <li><strong>Locate the target method</strong>: Determine the method’s index in the vtable</li>
+  <li><strong>Save the original pointer</strong>: Store the original method address</li>
+  <li><strong>Replace with hook</strong>: Point the vtable entry to your hook function</li>
+  <li><strong>Implement the hook</strong>: Call the original method as needed</li>
+</ol>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Pseudocode for vtable hooking</span>
+<span class="kt">void</span><span class="o">*</span> <span class="n">original_method</span> <span class="o">=</span> <span class="n">object</span><span class="o">-&gt;</span><span class="n">vtable</span><span class="p">[</span><span class="n">method_index</span><span class="p">];</span>
+<span class="n">object</span><span class="o">-&gt;</span><span class="n">vtable</span><span class="p">[</span><span class="n">method_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_hook_function</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">my_hook_function</span><span class="p">(</span><span class="n">Object</span><span class="o">*</span> <span class="n">this</span><span class="p">,</span> <span class="p">...)</span> <span class="p">{</span>
+    <span class="c1">// Pre-processing</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Method called with arg: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">some_arg</span><span class="p">);</span>
+    
+    <span class="c1">// Call original method</span>
+    <span class="n">original_method</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="p">...);</span>
+    
+    <span class="c1">// Post-processing</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Method returned</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="case-study-reverse-engineering-a-database-format">Case Study: Reverse Engineering a Database Format</h2>
+
+<p>Let’s apply these techniques to reverse engineer a proprietary database file format loaded into memory.</p>
+
+<h3 id="initial-reconnaissance">Initial Reconnaissance</h3>
+
+<p>We start by observing the program loading the database:</p>
+
+<ol>
+  <li><strong>File I/O monitoring</strong> shows the program reading a 2MB file into memory</li>
+  <li><strong>Memory allocation tracking</strong> reveals a large allocation followed by many smaller ones</li>
+  <li><strong>String searches</strong> find table and column names scattered throughout memory</li>
+</ol>
+
+<h3 id="structure-identification">Structure Identification</h3>
+
+<p>By setting breakpoints on memory access and examining patterns:</p>
+
+<ol>
+  <li>We identify a <strong>header structure</strong> at the beginning of the loaded file:
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">DatabaseHeader</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">magic</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>        <span class="c1">// "PROPDB\0\0"</span>
+    <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">;</span>     <span class="c1">// Format version (e.g., 0x00010002)</span>
+    <span class="kt">uint32_t</span> <span class="n">table_count</span><span class="p">;</span> <span class="c1">// Number of tables</span>
+    <span class="kt">uint32_t</span> <span class="n">flags</span><span class="p">;</span>       <span class="c1">// Various flags</span>
+    <span class="kt">uint64_t</span> <span class="n">table_offset</span><span class="p">;</span> <span class="c1">// Pointer to table definitions</span>
+<span class="p">};</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Following the <code class="language-plaintext highlighter-rouge">table_offset</code>, we find an array of <strong>table definitions</strong>:
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">TableDef</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">id</span><span class="p">;</span>          <span class="c1">// Table identifier</span>
+    <span class="kt">uint32_t</span> <span class="n">column_count</span><span class="p">;</span> <span class="c1">// Number of columns</span>
+    <span class="kt">uint32_t</span> <span class="n">row_count</span><span class="p">;</span>   <span class="c1">// Number of rows</span>
+    <span class="kt">uint32_t</span> <span class="n">flags</span><span class="p">;</span>       <span class="c1">// Table flags</span>
+    <span class="kt">uint64_t</span> <span class="n">name_offset</span><span class="p">;</span> <span class="c1">// Pointer to table name</span>
+    <span class="kt">uint64_t</span> <span class="n">column_offset</span><span class="p">;</span> <span class="c1">// Pointer to column definitions</span>
+    <span class="kt">uint64_t</span> <span class="n">data_offset</span><span class="p">;</span> <span class="c1">// Pointer to row data</span>
+<span class="p">};</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Each table has an array of <strong>column definitions</strong>:
+    <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">ColumnDef</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">id</span><span class="p">;</span>          <span class="c1">// Column identifier</span>
+    <span class="kt">uint32_t</span> <span class="n">type</span><span class="p">;</span>        <span class="c1">// Data type (1=int, 2=float, 3=string, etc.)</span>
+    <span class="kt">uint32_t</span> <span class="n">flags</span><span class="p">;</span>       <span class="c1">// Column flags</span>
+    <span class="kt">uint32_t</span> <span class="n">offset</span><span class="p">;</span>      <span class="c1">// Offset within row structure</span>
+    <span class="kt">uint64_t</span> <span class="n">name_offset</span><span class="p">;</span> <span class="c1">// Pointer to column name</span>
+<span class="p">};</span>
+</code></pre></div>    </div>
+  </li>
+  <li>The actual <strong>data</strong> is stored in a custom format:
+    <ul>
+      <li>Fixed-length rows for numeric data</li>
+      <li>Variable-length strings stored in a separate area with pointers</li>
+      <li>Indexes implemented as B-trees for fast lookups</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="memory-access-analysis">Memory Access Analysis</h3>
+
+<p>By tracing code that accesses these structures:</p>
+
+<ol>
+  <li>We discover the <strong>query execution path</strong>:
+    <ul>
+      <li>Queries are parsed into an internal representation</li>
+      <li>Table definitions are located by name or ID</li>
+      <li>For indexed queries, the B-tree is traversed</li>
+      <li>For sequential scans, each row is examined</li>
+      <li>Results are collected into a temporary structure</li>
+    </ul>
+  </li>
+  <li>We identify the <strong>data modification process</strong>:
+    <ul>
+      <li>Changes are first written to a transaction log</li>
+      <li>Modified rows are updated in memory</li>
+      <li>A background thread periodically flushes changes to disk</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="structure-manipulation">Structure Manipulation</h3>
+
+<p>With this understanding, we can manipulate the database:</p>
+
+<ol>
+  <li><strong>Data modification</strong>: Directly change values in the row data</li>
+  <li><strong>Schema alteration</strong>: Modify column definitions to change types or flags</li>
+  <li><strong>Access control bypass</strong>: Change permission flags in table definitions</li>
+  <li><strong>Query injection</strong>: Insert custom entries into the query processing structures</li>
+</ol>
+
+<h3 id="practical-application">Practical Application</h3>
+
+<p>This reverse engineering enables several useful capabilities:</p>
+
+<ol>
+  <li><strong>Data recovery</strong>: Extract data from corrupted database files</li>
+  <li><strong>Format conversion</strong>: Create tools to convert to standard formats like SQL</li>
+  <li><strong>Performance optimization</strong>: Understand and improve inefficient queries</li>
+  <li><strong>Security assessment</strong>: Identify vulnerabilities in the database implementation</li>
+</ol>
+
+<h2 id="advanced-memory-analysis-techniques">Advanced Memory Analysis Techniques</h2>
+
+<p>Beyond basic structure analysis, several advanced techniques provide deeper insights.</p>
+
+<h3 id="memory-forensics">Memory Forensics</h3>
+
+<p>Memory forensics techniques help analyze complex or obfuscated structures:</p>
+
+<h4 id="memory-scanning">Memory Scanning</h4>
+
+<p>Scanning memory for patterns can locate structures:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pseudocode for scanning memory for credit card numbers
+</span><span class="k">def</span> <span class="nf">scan_for_cc_numbers</span><span class="p">(</span><span class="n">memory_dump</span><span class="p">):</span>
+    <span class="c1"># Regular expression for common credit card formats
+</span>    <span class="n">cc_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="sa">b</span><span class="s">'[3-6]\d{3}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}'</span><span class="p">)</span>
+    
+    <span class="c1"># Scan memory in overlapping chunks
+</span>    <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">memory_dump</span><span class="p">)</span> <span class="o">-</span> <span class="mi">20</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">memory_dump</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span><span class="o">+</span><span class="mi">20</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">cc_pattern</span><span class="p">.</span><span class="n">match</span><span class="p">(</span><span class="n">chunk</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Potential credit card at offset </span><span class="si">{</span><span class="n">offset</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">chunk</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="pool-tag-scanning">Pool Tag Scanning</h4>
+
+<p>On Windows, kernel structures often have identifiable pool tags:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># WinDbg pool tag scanning
+!poolused 4 Proc  # Find process objects by 'Proc' tag
+</code></pre></div></div>
+
+<h4 id="signature-based-detection">Signature-Based Detection</h4>
+
+<p>Identifying structures by their unique signatures:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pseudocode for finding C++ std::string objects
+</span><span class="k">def</span> <span class="nf">find_std_strings</span><span class="p">(</span><span class="n">memory_dump</span><span class="p">):</span>
+    <span class="c1"># Look for typical std::string layout (simplified)
+</span>    <span class="c1"># [length(8 bytes), capacity(8 bytes), small string flag(1 byte)]
+</span>    <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">memory_dump</span><span class="p">)</span> <span class="o">-</span> <span class="mi">17</span><span class="p">):</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">struct</span><span class="p">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">"&lt;Q"</span><span class="p">,</span> <span class="n">memory_dump</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span><span class="o">+</span><span class="mi">8</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">capacity</span> <span class="o">=</span> <span class="n">struct</span><span class="p">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">"&lt;Q"</span><span class="p">,</span> <span class="n">memory_dump</span><span class="p">[</span><span class="n">offset</span><span class="o">+</span><span class="mi">8</span><span class="p">:</span><span class="n">offset</span><span class="o">+</span><span class="mi">16</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Validate potential std::string
+</span>        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="n">capacity</span> <span class="ow">and</span> <span class="n">capacity</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">:</span>
+            <span class="c1"># Likely std::string found
+</span>            <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Potential std::string at </span><span class="si">{</span><span class="n">offset</span><span class="si">}</span><span class="s">: len=</span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s">, cap=</span><span class="si">{</span><span class="n">capacity</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="heap-profiling">Heap Profiling</h3>
+
+<p>Analyzing heap usage patterns reveals program behavior:</p>
+
+<h4 id="allocation-frequency-analysis">Allocation Frequency Analysis</h4>
+
+<p>Tracking allocation patterns over time shows program phases:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pseudocode for allocation frequency analysis
+</span><span class="n">allocation_timeline</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">track_allocation</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+    <span class="n">allocation_timeline</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">address</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">analyze_timeline</span><span class="p">():</span>
+    <span class="c1"># Group by time intervals
+</span>    <span class="n">intervals</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">allocation_timeline</span><span class="p">:</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">//</span> <span class="mi">1000</span>  <span class="c1"># Group by seconds
+</span>        <span class="k">if</span> <span class="n">interval</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
+            <span class="n">intervals</span><span class="p">[</span><span class="n">interval</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intervals</span><span class="p">[</span><span class="n">interval</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span>
+    
+    <span class="c1"># Plot allocation rate over time
+</span>    <span class="n">plot</span><span class="p">(</span><span class="n">intervals</span><span class="p">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">intervals</span><span class="p">.</span><span class="n">values</span><span class="p">())</span>
+</code></pre></div></div>
+
+<h4 id="memory-leak-detection">Memory Leak Detection</h4>
+
+<p>Identifying objects that accumulate without being freed:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pseudocode for leak detection
+</span><span class="n">active_allocations</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">track_malloc</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">callstack</span><span class="p">):</span>
+    <span class="n">active_allocations</span><span class="p">[</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">callstack</span><span class="p">,</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">())</span>
+
+<span class="k">def</span> <span class="nf">track_free</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">active_allocations</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">active_allocations</span><span class="p">[</span><span class="n">address</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">find_leaks</span><span class="p">():</span>
+    <span class="c1"># Group by callstack
+</span>    <span class="n">leaks_by_callstack</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">address</span><span class="p">,</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">callstack</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span> <span class="ow">in</span> <span class="n">active_allocations</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">callstack</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">leaks_by_callstack</span><span class="p">:</span>
+            <span class="n">leaks_by_callstack</span><span class="p">[</span><span class="n">callstack</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">leaks_by_callstack</span><span class="p">[</span><span class="n">callstack</span><span class="p">].</span><span class="n">append</span><span class="p">((</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">))</span>
+    
+    <span class="c1"># Sort by total size and age
+</span>    <span class="k">for</span> <span class="n">callstack</span><span class="p">,</span> <span class="n">allocations</span> <span class="ow">in</span> <span class="n">leaks_by_callstack</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">size</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">allocations</span><span class="p">)</span>
+        <span class="n">oldest_age</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">timestamp</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">timestamp</span> <span class="ow">in</span> <span class="n">allocations</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Potential leak: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allocations</span><span class="p">)</span><span class="si">}</span><span class="s"> objects, </span><span class="si">{</span><span class="n">total_size</span><span class="si">}</span><span class="s"> bytes, </span><span class="si">{</span><span class="n">oldest_age</span><span class="si">}</span><span class="s">s old"</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Callstack: </span><span class="si">{</span><span class="n">callstack</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="memory-diffing">Memory Diffing</h3>
+
+<p>Comparing memory states before and after operations reveals changes:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pseudocode for memory diffing
+</span><span class="k">def</span> <span class="nf">capture_memory_state</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">regions_of_interest</span><span class="p">):</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">regions_of_interest</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[(</span><span class="n">start</span><span class="p">,</span> <span class="n">size</span><span class="p">)]</span> <span class="o">=</span> <span class="n">process</span><span class="p">.</span><span class="n">read_memory</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">state</span>
+
+<span class="k">def</span> <span class="nf">compare_states</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">):</span>
+    <span class="n">changes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">region</span><span class="p">,</span> <span class="n">before_data</span> <span class="ow">in</span> <span class="n">before</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">region</span>
+        <span class="n">after_data</span> <span class="o">=</span> <span class="n">after</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">after_data</span><span class="p">:</span>
+            <span class="c1"># Find differences
+</span>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">before_data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">after_data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">before_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">after_data</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">changes</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">before_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">after_data</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">changes</span>
+
+<span class="c1"># Usage
+</span><span class="n">before</span> <span class="o">=</span> <span class="n">capture_memory_state</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">regions</span><span class="p">)</span>
+<span class="c1"># Perform operation
+</span><span class="n">after</span> <span class="o">=</span> <span class="n">capture_memory_state</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">regions</span><span class="p">)</span>
+<span class="n">changes</span> <span class="o">=</span> <span class="n">compare_states</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">address</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="n">new_value</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Change at 0x</span><span class="si">{</span><span class="n">address</span><span class="si">:</span><span class="n">x</span><span class="si">}</span><span class="s">: 0x</span><span class="si">{</span><span class="n">old_value</span><span class="si">:</span><span class="mi">02</span><span class="n">x</span><span class="si">}</span><span class="s"> -&gt; 0x</span><span class="si">{</span><span class="n">new_value</span><span class="si">:</span><span class="mi">02</span><span class="n">x</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="exercises">Exercises</h2>
+
+<ol>
+  <li><strong>Basic Structure Identification</strong>:
+    <ul>
+      <li>Download a simple open-source program with known data structures</li>
+      <li>Use a debugger to locate these structures in memory</li>
+      <li>Document the memory layout and compare with the source code</li>
+      <li>Create a tool to dump and parse these structures from memory</li>
+    </ul>
+  </li>
+  <li><strong>Linked Structure Navigation</strong>:
+    <ul>
+      <li>Write a debugger script that traverses a linked list or tree</li>
+      <li>The script should print each node’s content and structure</li>
+      <li>Test it on a program that uses standard container classes</li>
+      <li>Extend it to handle circular references and detect loops</li>
+    </ul>
+  </li>
+  <li><strong>Custom Structure Reconstruction</strong>:
+    <ul>
+      <li>Analyze a proprietary file format loaded into memory</li>
+      <li>Identify the header, metadata, and data sections</li>
+      <li>Create C/C++ struct definitions matching the memory layout</li>
+      <li>Write a parser that can extract data from memory dumps</li>
+    </ul>
+  </li>
+  <li><strong>Memory Manipulation Challenge</strong>:
+    <ul>
+      <li>Choose a program with a trial limitation or feature restriction</li>
+      <li>Identify the memory structures controlling this limitation</li>
+      <li>Develop a technique to modify these structures at runtime</li>
+      <li>Document the changes needed to bypass the restriction</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="summary">Summary</h2>
+
+<p>Reverse engineering memory structures is a powerful technique for understanding how programs work at a fundamental level. By analyzing how data is organized and accessed in memory, you can:</p>
+
+<ul>
+  <li><strong>Reconstruct data structures</strong> without source code</li>
+  <li><strong>Understand algorithms</strong> by observing their data manipulations</li>
+  <li><strong>Modify program behavior</strong> by altering memory contents</li>
+  <li><strong>Extract sensitive information</strong> from running processes</li>
+  <li><strong>Bypass protection mechanisms</strong> by manipulating control structures</li>
+</ul>
+
+<p>Key skills developed in this chapter include:</p>
+
+<ul>
+  <li>Recognizing common memory patterns</li>
+  <li>Mapping memory access to high-level structures</li>
+  <li>Reconstructing complex data relationships</li>
+  <li>Manipulating memory to alter program behavior</li>
+  <li>Applying forensic techniques to memory analysis</li>
+</ul>
+
+
+  </div>
+
+  <nav class="chapter-navigation">
+    
+    <a href="/chapters/chapter-08-debugging-techniques/" class="prev">&laquo; </a>
+    
+    
+    <a href="/chapters" class="toc">Table of Contents</a>
+    
+    
+    <a href="/chapters/chapter-10-unpacking-and-anti-reversing-techniques/" class="next"> &raquo;</a>
+    
+  </nav>
+</article>
+  </main>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <h2 class="footer-heading">Inside the Machine</h2>
+        <p>A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.
+</p>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Contact</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:immadmohit@gmail.com">immadmohit@gmail.com</a></li>
+          <li><a href="https://github.com/mohitmishra786">GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Quick Links</h2>
+        <ul class="page-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/chapters">Chapters</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2025 Mohit Mishra. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+  
+  <script src="/assets/js/theme-toggle.js"></script>
+</body>
+</html>

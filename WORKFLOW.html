@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Development Workflow | Inside the Machine</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Book Development Workflow" />
+<meta name="author" content="Mohit Mishra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<meta property="og:description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<link rel="canonical" href="https://mohitmishra786.github.io/inside-the-machine/WORKFLOW.html" />
+<meta property="og:url" content="https://mohitmishra786.github.io/inside-the-machine/WORKFLOW.html" />
+<meta property="og:site_name" content="Inside the Machine" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Book Development Workflow" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Mohit Mishra"},"description":"A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.","headline":"Book Development Workflow","url":"https://mohitmishra786.github.io/inside-the-machine/WORKFLOW.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <a href="/" class="site-title">Inside the Machine</a>
+    
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+      <label for="nav-trigger">
+        <span class="menu-icon">
+          <svg viewBox="0 0 18 15" width="18px" height="15px">
+            <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+          </svg>
+        </span>
+      </label>
+
+      <div class="trigger">
+        <a class="page-link" href="/chapters">Chapters</a>
+        <a class="page-link" href="/about">About</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+  
+  <main class="container">
+    <h1 id="book-development-workflow">Book Development Workflow</h1>
+
+<h2 id="project-overview">Project Overview</h2>
+
+<p>“Inside the Machine” is a book about reverse engineering that is being developed incrementally. The book uses Jekyll and GitHub Pages for publishing.</p>
+
+<h2 id="current-status">Current Status</h2>
+
+<ul>
+  <li>Total planned chapters: 17</li>
+  <li>Currently available: Sample chapter(s) only</li>
+  <li>The book is organized into 6 parts</li>
+</ul>
+
+<h2 id="local-development-setup">Local Development Setup</h2>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<ul>
+  <li>Ruby (recommended version: 2.7.0 or newer)</li>
+  <li>Git</li>
+  <li>Docker (alternative option, especially recommended for macOS)</li>
+</ul>
+
+<h3 id="setting-up-local-environment">Setting Up Local Environment</h3>
+
+<ol>
+  <li>Clone the repository (if you haven’t already):
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/mohitmishra786/inside-the-machine.git
+<span class="nb">cd </span>inside-the-machine
+</code></pre></div>    </div>
+  </li>
+  <li>Install dependencies locally (without global installation):
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle config <span class="nb">set</span> <span class="nt">--local</span> path <span class="s1">'vendor/bundle'</span>
+bundle <span class="nb">install</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Run the Jekyll server locally:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll serve
+</code></pre></div>    </div>
+  </li>
+  <li>Access the site at http://localhost:4000</li>
+</ol>
+
+<h3 id="alternative-using-docker-recommended-for-macos">Alternative: Using Docker (Recommended for macOS)</h3>
+
+<p>To avoid dependency issues, especially on macOS, you can use Docker:</p>
+
+<ol>
+  <li>
+    <p>Make sure Docker is installed on your system</p>
+  </li>
+  <li>Run the provided script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./serve.sh
+</code></pre></div>    </div>
+
+    <p>Or manually run Docker:</p>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="se">\</span>
+  <span class="nt">--volume</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">:/srv/jekyll"</span> <span class="se">\</span>
+  <span class="nt">--volume</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/vendor/bundle:/usr/local/bundle"</span> <span class="se">\</span>
+  <span class="nt">-p</span> 4000:4000 <span class="se">\</span>
+  jekyll/jekyll:4.2.2 <span class="se">\</span>
+  jekyll serve
+</code></pre></div>    </div>
+  </li>
+  <li>Access the site at http://localhost:4000</li>
+</ol>
+
+<h3 id="troubleshooting-macos-issues">Troubleshooting macOS Issues</h3>
+
+<p>If you encounter issues on macOS, especially with FFI or native extensions:</p>
+
+<ol>
+  <li>Run the fix script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./fix_macos.sh
+</code></pre></div>    </div>
+  </li>
+  <li>For detailed troubleshooting steps, refer to <a href="/MACOS_SETUP.html">MACOS_SETUP.md</a></li>
+</ol>
+
+<h2 id="adding-new-chapters">Adding New Chapters</h2>
+
+<ol>
+  <li>Create a new markdown file in the <code class="language-plaintext highlighter-rouge">_chapters</code> directory with the following naming convention:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chapter-XX-name-of-chapter.md
+</code></pre></div>    </div>
+    <p>Where XX is the chapter number (e.g., 01, 02, etc.)</p>
+  </li>
+  <li>Add the following front matter to the top of the file:
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">chapter</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Chapter</span><span class="nv"> </span><span class="s">Title"</span>
+<span class="na">chapter_number</span><span class="pi">:</span> <span class="s">X</span>
+<span class="na">part</span><span class="pi">:</span> <span class="s">Y</span>
+<span class="na">permalink</span><span class="pi">:</span> <span class="s">/chapters/chapter-title/</span>
+<span class="nn">---</span>
+</code></pre></div>    </div>
+    <p>Replace X with the chapter number and Y with the part number (1-6).</p>
+  </li>
+  <li>Write your chapter content in Markdown format below the front matter.</li>
+</ol>
+
+<h2 id="updating-the-book-progress">Updating the Book Progress</h2>
+
+<p>The about.md file automatically calculates the book progress based on the number of files in the <code class="language-plaintext highlighter-rouge">_chapters</code> directory compared to the total planned chapters (17).</p>
+
+<h2 id="github-workflow">GitHub Workflow</h2>
+
+<h3 id="regular-updates">Regular Updates</h3>
+
+<ol>
+  <li>Create a new branch for your changes:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout <span class="nt">-b</span> chapter-XX
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Make your changes (add/edit chapters, update content, etc.)</p>
+  </li>
+  <li>Run the GitHub Pages preparation script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./prepare_for_github.sh
+</code></pre></div>    </div>
+    <p>This script will:</p>
+    <ul>
+      <li>Fix YAML front matter in chapter files</li>
+      <li>Remove template and sample chapters</li>
+      <li>Set up the proper Gemfile for GitHub Pages</li>
+      <li>Ensure CSS is properly configured</li>
+      <li>Update _config.yml if needed</li>
+    </ul>
+  </li>
+  <li>Commit your changes:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Add Chapter XX: Chapter Title"</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Push to GitHub:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin chapter-XX
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Create a Pull Request on GitHub to merge your changes into the main branch</p>
+  </li>
+  <li>After review, merge the Pull Request</li>
+</ol>
+
+<h3 id="automated-deployment">Automated Deployment</h3>
+
+<p>The site is automatically deployed to GitHub Pages whenever changes are pushed to the main branch.</p>
+
+<h2 id="directory-structure">Directory Structure</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">_chapters/</code>: Contains all chapter markdown files</li>
+  <li><code class="language-plaintext highlighter-rouge">Part-X-*/</code>: Contains supplementary materials for each part</li>
+  <li><code class="language-plaintext highlighter-rouge">_layouts/</code>: Jekyll layout templates</li>
+  <li><code class="language-plaintext highlighter-rouge">_includes/</code>: Jekyll include files</li>
+  <li><code class="language-plaintext highlighter-rouge">assets/</code>: Static assets (CSS, images, etc.)</li>
+</ul>
+
+<h2 id="tips-for-maintaining-the-book">Tips for Maintaining the Book</h2>
+
+<ol>
+  <li>Keep a consistent style across chapters</li>
+  <li>Regularly update the README.md with new information</li>
+  <li>Consider adding a CHANGELOG.md to track major updates</li>
+  <li>Use GitHub Issues to track planned chapters and features</li>
+  <li>Engage with readers through GitHub Discussions</li>
+</ol>
+
+<h2 id="publishing-updates">Publishing Updates</h2>
+
+<p>When you’re ready to publish updates to your readers:</p>
+
+<ol>
+  <li>Ensure all changes are merged to the main branch</li>
+  <li>GitHub Pages will automatically build and deploy the site</li>
+  <li>Announce the update through GitHub Releases or other channels</li>
+</ol>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3 id="local-jekyll-issues">Local Jekyll Issues</h3>
+
+<p>If you encounter issues with the local Jekyll server:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle update
+bundle <span class="nb">exec </span>jekyll clean
+bundle <span class="nb">exec </span>jekyll serve
+</code></pre></div></div>
+
+<h3 id="github-pages-build-failures">GitHub Pages Build Failures</h3>
+
+<p>Check the GitHub Actions tab in your repository to see build logs and error messages.</p>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <h2 class="footer-heading">Inside the Machine</h2>
+        <p>A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.
+</p>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Contact</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:immadmohit@gmail.com">immadmohit@gmail.com</a></li>
+          <li><a href="https://github.com/mohitmishra786">GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Quick Links</h2>
+        <ul class="page-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/chapters">Chapters</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2025 Mohit Mishra. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+  
+  <script src="/assets/js/theme-toggle.js"></script>
+</body>
+</html>

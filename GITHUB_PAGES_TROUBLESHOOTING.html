@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Pages Troubleshooting Guide | Inside the Machine</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="GitHub Pages Troubleshooting Guide" />
+<meta name="author" content="Mohit Mishra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<meta property="og:description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<link rel="canonical" href="https://mohitmishra786.github.io/inside-the-machine/GITHUB_PAGES_TROUBLESHOOTING.html" />
+<meta property="og:url" content="https://mohitmishra786.github.io/inside-the-machine/GITHUB_PAGES_TROUBLESHOOTING.html" />
+<meta property="og:site_name" content="Inside the Machine" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="GitHub Pages Troubleshooting Guide" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Mohit Mishra"},"description":"A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.","headline":"GitHub Pages Troubleshooting Guide","url":"https://mohitmishra786.github.io/inside-the-machine/GITHUB_PAGES_TROUBLESHOOTING.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <a href="/" class="site-title">Inside the Machine</a>
+    
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+      <label for="nav-trigger">
+        <span class="menu-icon">
+          <svg viewBox="0 0 18 15" width="18px" height="15px">
+            <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+          </svg>
+        </span>
+      </label>
+
+      <div class="trigger">
+        <a class="page-link" href="/chapters">Chapters</a>
+        <a class="page-link" href="/about">About</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+  
+  <main class="container">
+    <h1 id="github-pages-troubleshooting-guide">GitHub Pages Troubleshooting Guide</h1>
+
+<h2 id="common-issues-and-solutions">Common Issues and Solutions</h2>
+
+<h3 id="yaml-front-matter-errors">YAML Front Matter Errors</h3>
+
+<p><strong>Error Message:</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>YAML Exception reading file: mapping values are not allowed in this context
+</code></pre></div></div>
+
+<p><strong>Solution:</strong>
+This usually happens when you have colons (<code class="language-plaintext highlighter-rouge">:</code>) in your YAML front matter values. Fix by:</p>
+
+<ol>
+  <li>Run the fix script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./fix_chapter_frontmatter.rb
+</code></pre></div>    </div>
+  </li>
+  <li>Or manually wrap values containing colons in quotes:
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Chapter</span><span class="nv"> </span><span class="s">1:</span><span class="nv"> </span><span class="s">Introduction"</span>
+<span class="na">part</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Part</span><span class="nv"> </span><span class="s">1:</span><span class="nv"> </span><span class="s">Fundamentals"</span>
+<span class="nn">---</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="faraday-retry-middleware-warning">Faraday Retry Middleware Warning</h3>
+
+<p><strong>Warning Message:</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>To use retry middleware with Faraday v2.0+, install `faraday-retry` gem
+</code></pre></div></div>
+
+<p><strong>Solution:</strong></p>
+<ol>
+  <li>Add the gem to your Gemfile:
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"faraday-retry"</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Run bundle install:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">install</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Or use the GitHub Pages preparation script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./prepare_for_github.sh
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="css-not-loading">CSS Not Loading</h3>
+
+<p><strong>Symptom:</strong> Site appears without styling</p>
+
+<p><strong>Solution:</strong>
+Ensure your CSS files have proper front matter for Jekyll processing:</p>
+
+<ol>
+  <li>Make sure your main.scss file starts with:
+    <div class="language-scss highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">---</span>
+<span class="nt">---</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Or run the preparation script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./prepare_for_github.sh
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="wrong-chapter-count">Wrong Chapter Count</h3>
+
+<p><strong>Symptom:</strong> The progress bar shows incorrect chapter count</p>
+
+<p><strong>Solution:</strong>
+Remove template and sample chapters:</p>
+
+<ol>
+  <li>Run the cleanup script:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby cleanup_chapters.rb
+</code></pre></div>    </div>
+  </li>
+  <li>Or manually delete:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">_chapters/chapter-template.md</code></li>
+      <li><code class="language-plaintext highlighter-rouge">_chapters/sample-chapter.md</code></li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="baseurl-issues">Baseurl Issues</h3>
+
+<p><strong>Symptom:</strong> Links are broken or resources not loading</p>
+
+<p><strong>Solution:</strong>
+Ensure your <code class="language-plaintext highlighter-rouge">_config.yml</code> has the correct baseurl:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">baseurl</span><span class="pi">:</span> <span class="s1">'</span><span class="s">/inside-the-machine'</span>
+<span class="na">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">https://mohitmishra786.github.io'</span>
+</code></pre></div></div>
+
+<h3 id="build-failures">Build Failures</h3>
+
+<p>If your GitHub Pages build is failing:</p>
+
+<ol>
+  <li>Check the GitHub Actions logs for specific error messages</li>
+  <li>Run the preparation script before pushing:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./prepare_for_github.sh
+</code></pre></div>    </div>
+  </li>
+  <li>Test locally with:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll build <span class="nt">--safe</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="complete-reset">Complete Reset</h2>
+
+<p>If you’re experiencing multiple issues, you can perform a complete reset:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Remove all generated files</span>
+<span class="nb">rm</span> <span class="nt">-rf</span> _site vendor .jekyll-cache .sass-cache
+
+<span class="c"># Run the preparation script</span>
+./prepare_for_github.sh
+
+<span class="c"># Commit and push</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Reset and fix GitHub Pages issues"</span>
+git push origin main
+</code></pre></div></div>
+
+<h2 id="getting-help">Getting Help</h2>
+
+<p>If you continue to experience issues:</p>
+
+<ol>
+  <li>Check the <a href="https://docs.github.com/en/pages">GitHub Pages documentation</a></li>
+  <li>Look for error messages in the GitHub Actions build logs</li>
+  <li>Test your site locally with the github-pages gem:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll serve <span class="nt">--config</span> _config.yml
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <h2 class="footer-heading">Inside the Machine</h2>
+        <p>A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.
+</p>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Contact</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:immadmohit@gmail.com">immadmohit@gmail.com</a></li>
+          <li><a href="https://github.com/mohitmishra786">GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Quick Links</h2>
+        <ul class="page-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/chapters">Chapters</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2025 Mohit Mishra. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+  
+  <script src="/assets/js/theme-toggle.js"></script>
+</body>
+</html>

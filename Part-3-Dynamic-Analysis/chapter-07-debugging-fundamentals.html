@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 7: Debugging Fundamentals | Inside the Machine</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Chapter 7: Debugging Fundamentals" />
+<meta name="author" content="Mohit Mishra" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<meta property="og:description" content="A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems." />
+<link rel="canonical" href="https://mohitmishra786.github.io/inside-the-machine/Part-3-Dynamic-Analysis/chapter-07-debugging-fundamentals.html" />
+<meta property="og:url" content="https://mohitmishra786.github.io/inside-the-machine/Part-3-Dynamic-Analysis/chapter-07-debugging-fundamentals.html" />
+<meta property="og:site_name" content="Inside the Machine" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Chapter 7: Debugging Fundamentals" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Mohit Mishra"},"description":"A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.","headline":"Chapter 7: Debugging Fundamentals","url":"https://mohitmishra786.github.io/inside-the-machine/Part-3-Dynamic-Analysis/chapter-07-debugging-fundamentals.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <a href="/" class="site-title">Inside the Machine</a>
+    
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+      <label for="nav-trigger">
+        <span class="menu-icon">
+          <svg viewBox="0 0 18 15" width="18px" height="15px">
+            <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+          </svg>
+        </span>
+      </label>
+
+      <div class="trigger">
+        <a class="page-link" href="/chapters">Chapters</a>
+        <a class="page-link" href="/about">About</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+  
+  <main class="container">
+    <h1 id="chapter-7-debugging-fundamentals">Chapter 7: Debugging Fundamentals</h1>
+
+<p><em>Part 3: Dynamic Analysis</em></p>
+
+<p>In this chapter, we’ll explore the fundamentals of debugging as a reverse engineering technique. We’ll examine how debuggers work, the different types available, and how to use them effectively to understand program behavior. Whether you’re analyzing malware, fixing bugs, or learning how a program functions, debugging provides insights that static analysis alone cannot reveal.</p>
+
+<h2 id="understanding-debuggers">Understanding Debuggers</h2>
+
+<p>A debugger is a tool that allows you to control and observe a program’s execution. Unlike static analysis, which examines a program without running it, debugging is a dynamic analysis technique that lets you see the program in action, pausing execution at specific points to inspect its state.</p>
+
+<h3 id="how-debuggers-work">How Debuggers Work</h3>
+
+<p>At their core, debuggers operate by controlling the execution of another process. This control is typically achieved through one of several mechanisms:</p>
+
+<h4 id="system-level-debugging-interfaces">System-Level Debugging Interfaces</h4>
+
+<p>Operating systems provide specific APIs for debugging:</p>
+
+<ul>
+  <li><strong>Windows</strong>: The Windows Debugging API provides functions like <code class="language-plaintext highlighter-rouge">DebugActiveProcess()</code> and <code class="language-plaintext highlighter-rouge">WaitForDebugEvent()</code></li>
+  <li><strong>Linux</strong>: The <code class="language-plaintext highlighter-rouge">ptrace</code> system call allows one process to observe and control another</li>
+  <li><strong>macOS</strong>: The Mach exception handling mechanism supports debugging operations</li>
+</ul>
+
+<p>These interfaces allow debuggers to:</p>
+
+<ol>
+  <li>Start a process in a debugged state or attach to an already running process</li>
+  <li>Set breakpoints by modifying code in memory</li>
+  <li>Single-step through instructions</li>
+  <li>Access the target’s memory and registers</li>
+  <li>Receive notifications of exceptions and events</li>
+</ol>
+
+<h4 id="hardware-debugging-support">Hardware Debugging Support</h4>
+
+<p>Modern processors include hardware features specifically designed to support debugging:</p>
+
+<ul>
+  <li><strong>Hardware breakpoints</strong>: Special debug registers (like DR0-DR7 on x86) that can trigger breaks on memory access without modifying code</li>
+  <li><strong>Single-step mode</strong>: A processor flag (like the Trap Flag on x86) that causes an interrupt after each instruction</li>
+  <li><strong>Performance monitoring</strong>: Counters and triggers for analyzing program behavior</li>
+  <li><strong>Branch tracing</strong>: Recording the path of execution through branches</li>
+</ul>
+
+<p>These hardware features make debugging more efficient and less intrusive than software-only approaches.</p>
+
+<h4 id="breakpoint-implementation">Breakpoint Implementation</h4>
+
+<p>Breakpoints are the most fundamental debugging mechanism, allowing execution to pause at specific locations. They’re typically implemented in one of two ways:</p>
+
+<p><strong>Software Breakpoints</strong>:</p>
+<ol>
+  <li>The debugger saves the original instruction byte at the breakpoint address</li>
+  <li>It replaces that byte with a special instruction that triggers a debug exception:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">INT 3</code> (opcode <code class="language-plaintext highlighter-rouge">0xCC</code>) on x86/x64</li>
+      <li><code class="language-plaintext highlighter-rouge">BKPT</code> on ARM</li>
+      <li><code class="language-plaintext highlighter-rouge">BREAK</code> on MIPS</li>
+    </ul>
+  </li>
+  <li>When execution reaches this instruction, the processor transfers control to the debugger</li>
+  <li>The debugger handles the breakpoint, restores the original instruction for execution, and gives control to the user</li>
+</ol>
+
+<p><strong>Hardware Breakpoints</strong>:</p>
+<ol>
+  <li>The debugger configures a debug register with the breakpoint address and type (execute, read, write)</li>
+  <li>When the processor accesses that address in the specified way, it generates a debug exception</li>
+  <li>The debugger receives control and pauses execution</li>
+</ol>
+
+<p>Hardware breakpoints are limited in number (typically 4 on x86) but don’t require modifying the target’s code, making them useful for debugging ROM, self-modifying code, or code in read-only memory.</p>
+
+<h3 id="types-of-debuggers">Types of Debuggers</h3>
+
+<p>Debuggers come in various forms, each suited to different scenarios:</p>
+
+<h4 id="user-mode-vs-kernel-mode-debuggers">User-Mode vs. Kernel-Mode Debuggers</h4>
+
+<p><strong>User-Mode Debuggers</strong> operate within the user space of an operating system and can only debug user applications. Examples include:</p>
+<ul>
+  <li>GDB on Linux/macOS</li>
+  <li>Microsoft Visual Studio Debugger</li>
+  <li>LLDB in the LLVM ecosystem</li>
+</ul>
+
+<p><strong>Kernel-Mode Debuggers</strong> can debug operating system kernels and drivers. They typically require special setup and often run on a separate machine. Examples include:</p>
+<ul>
+  <li>WinDbg with kernel debugging enabled</li>
+  <li>KGDB for Linux kernel debugging</li>
+  <li>Kernel Debug Kit on macOS</li>
+</ul>
+
+<h4 id="source-level-vs-assembly-level-debuggers">Source-Level vs. Assembly-Level Debuggers</h4>
+
+<p><strong>Source-Level Debuggers</strong> map machine code back to the original source code, allowing you to debug using variable names, line numbers, and high-level constructs. They require debug symbols or source code. Examples include:</p>
+<ul>
+  <li>Visual Studio Debugger</li>
+  <li>GDB with source code available</li>
+  <li>Eclipse Debug Platform</li>
+</ul>
+
+<p><strong>Assembly-Level Debuggers</strong> work directly with machine code and registers, without requiring source code. They’re essential for reverse engineering compiled binaries. Examples include:</p>
+<ul>
+  <li>OllyDbg</li>
+  <li>x64dbg</li>
+  <li>GDB in assembly mode</li>
+</ul>
+
+<h4 id="local-vs-remote-debuggers">Local vs. Remote Debuggers</h4>
+
+<p><strong>Local Debuggers</strong> run on the same system as the target program.</p>
+
+<p><strong>Remote Debuggers</strong> allow debugging a program running on a different machine, which is useful for:</p>
+<ul>
+  <li>Embedded systems development</li>
+  <li>Debugging in production environments</li>
+  <li>Analyzing malware in isolated environments</li>
+</ul>
+
+<h4 id="platform-specific-debuggers">Platform-Specific Debuggers</h4>
+
+<p>Many debuggers are designed for specific platforms or environments:</p>
+
+<ul>
+  <li><strong>Windows</strong>: WinDbg, x64dbg, OllyDbg</li>
+  <li><strong>Linux/Unix</strong>: GDB, LLDB</li>
+  <li><strong>macOS</strong>: LLDB, GDB (with limitations)</li>
+  <li><strong>Mobile</strong>: Android Debug Bridge (ADB), iOS Debug Bridge</li>
+  <li><strong>Embedded</strong>: JTAG debuggers, OpenOCD</li>
+</ul>
+
+<h3 id="debugger-components-and-features">Debugger Components and Features</h3>
+
+<p>Modern debuggers offer a range of features beyond basic execution control:</p>
+
+<h4 id="execution-control">Execution Control</h4>
+
+<ul>
+  <li><strong>Run/Continue</strong>: Resume execution until the next breakpoint or exception</li>
+  <li><strong>Step Into</strong>: Execute the next instruction, following calls into functions</li>
+  <li><strong>Step Over</strong>: Execute the next instruction, treating function calls as a single step</li>
+  <li><strong>Step Out</strong>: Execute until returning from the current function</li>
+  <li><strong>Run to Cursor</strong>: Execute until reaching the instruction at the cursor position</li>
+</ul>
+
+<h4 id="memory-and-register-inspection">Memory and Register Inspection</h4>
+
+<ul>
+  <li><strong>Memory viewers</strong>: Display raw memory contents in various formats (hex, ASCII, structures)</li>
+  <li><strong>Register windows</strong>: Show and modify CPU register values</li>
+  <li><strong>Variable watches</strong>: Monitor specific variables or memory locations</li>
+  <li><strong>Call stack viewers</strong>: Display the chain of function calls leading to the current point</li>
+</ul>
+
+<h4 id="breakpoint-types">Breakpoint Types</h4>
+
+<ul>
+  <li><strong>Execution breakpoints</strong>: Pause when execution reaches a specific address</li>
+  <li><strong>Data breakpoints</strong>: Pause when a memory location is read or written (also called watchpoints)</li>
+  <li><strong>Conditional breakpoints</strong>: Pause only when a specified condition is true</li>
+  <li><strong>One-shot breakpoints</strong>: Automatically remove themselves after being triggered once</li>
+  <li><strong>API breakpoints</strong>: Pause when specific API functions are called</li>
+</ul>
+
+<h4 id="analysis-tools">Analysis Tools</h4>
+
+<ul>
+  <li><strong>Disassembly views</strong>: Show the assembly code being executed</li>
+  <li><strong>Source code integration</strong>: Map assembly back to source when available</li>
+  <li><strong>Memory maps</strong>: Display the layout of the process’s address space</li>
+  <li><strong>Thread and process lists</strong>: Show and control multiple execution contexts</li>
+  <li><strong>Logging and tracing</strong>: Record execution paths and events</li>
+</ul>
+
+<h2 id="setting-up-a-debugging-environment">Setting Up a Debugging Environment</h2>
+
+<p>Before diving into debugging techniques, you need to set up an effective debugging environment. This involves selecting appropriate tools and configuring them for your specific needs.</p>
+
+<h3 id="choosing-the-right-debugger">Choosing the Right Debugger</h3>
+
+<p>Select a debugger based on your target and requirements:</p>
+
+<h4 id="for-windows-binaries">For Windows Binaries</h4>
+
+<ul>
+  <li><strong>x64dbg/x32dbg</strong>: Open-source, user-friendly debugger with a modern interface</li>
+  <li><strong>OllyDbg</strong>: Powerful assembly-level debugger (older but still widely used)</li>
+  <li><strong>WinDbg</strong>: Microsoft’s advanced debugger with scripting capabilities</li>
+  <li><strong>IDA Pro with Debugger</strong>: Combined disassembler and debugger for comprehensive analysis</li>
+</ul>
+
+<h4 id="for-linuxunix-binaries">For Linux/Unix Binaries</h4>
+
+<ul>
+  <li><strong>GDB</strong>: The GNU Debugger, powerful but with a steeper learning curve</li>
+  <li><strong>GDB frontends</strong>: GDB with graphical interfaces like GDB Dashboard, GEF, or PEDA</li>
+  <li><strong>LLDB</strong>: Part of the LLVM project, with a similar interface to GDB</li>
+  <li><strong>Radare2/Cutter</strong>: Combined disassembler and debugger with visualization features</li>
+</ul>
+
+<h4 id="for-macos-binaries">For macOS Binaries</h4>
+
+<ul>
+  <li><strong>LLDB</strong>: The primary debugger for macOS, integrated with Xcode</li>
+  <li><strong>GDB</strong>: Available through package managers but with limitations due to code signing</li>
+</ul>
+
+<h4 id="for-mobile-and-embedded-systems">For Mobile and Embedded Systems</h4>
+
+<ul>
+  <li><strong>Android</strong>: Android Studio Debugger, IDA Pro with Android support</li>
+  <li><strong>iOS</strong>: Xcode Debugger, LLDB over USB</li>
+  <li><strong>Embedded</strong>: JTAG debuggers, platform-specific IDE debuggers</li>
+</ul>
+
+<h3 id="configuring-your-debugger">Configuring Your Debugger</h3>
+
+<p>Once you’ve selected a debugger, configure it for effective reverse engineering:</p>
+
+<h4 id="essential-configurations">Essential Configurations</h4>
+
+<ol>
+  <li><strong>Interface Setup</strong>:
+    <ul>
+      <li>Arrange windows for simultaneous view of code, memory, registers, and stack</li>
+      <li>Configure fonts and colors for readability during long sessions</li>
+      <li>Set up keyboard shortcuts for common operations</li>
+    </ul>
+  </li>
+  <li><strong>Plugin Integration</strong>:
+    <ul>
+      <li>Install relevant plugins for your target (e.g., anti-anti-debugging, specific file format support)</li>
+      <li>Configure script extensions (Python for GDB/LLDB, JavaScript for x64dbg)</li>
+    </ul>
+  </li>
+  <li><strong>Symbol and Source Handling</strong>:
+    <ul>
+      <li>Configure symbol paths for system libraries</li>
+      <li>Set up source file locations if available</li>
+      <li>Import external symbols or function signatures</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="example-configuring-gdb-with-gef">Example: Configuring GDB with GEF</h4>
+
+<p>GDB’s default interface is minimal, but extensions like GEF (GDB Enhanced Features) transform it into a powerful reverse engineering platform:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install GEF</span>
+wget <span class="nt">-O</span> ~/.gdbinit-gef.py <span class="nt">-q</span> https://github.com/hugsy/gef/raw/master/gef.py
+<span class="nb">echo source</span> ~/.gdbinit-gef.py <span class="o">&gt;&gt;</span> ~/.gdbinit
+
+<span class="c"># Create a custom configuration</span>
+<span class="nb">cat</span> <span class="o">&gt;&gt;</span> ~/.gdbinit <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh">
+set disassembly-flavor intel
+set history save on
+set print pretty on
+set pagination off
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<p>This configuration:</p>
+<ul>
+  <li>Installs GEF for enhanced visualization</li>
+  <li>Sets Intel syntax for assembly (more readable than AT&amp;T)</li>
+  <li>Enables command history</li>
+  <li>Configures pretty-printing for structures</li>
+  <li>Disables paging for continuous output</li>
+</ul>
+
+<h4 id="example-configuring-x64dbg">Example: Configuring x64dbg</h4>
+
+<p>x64dbg can be customized through its options dialog and plugins:</p>
+
+<ol>
+  <li><strong>Interface Settings</strong>:
+    <ul>
+      <li>Options → Appearance → Set dark theme for reduced eye strain</li>
+      <li>View → CPU → Configure visible panes (registers, stack, memory)</li>
+    </ul>
+  </li>
+  <li><strong>Analysis Options</strong>:
+    <ul>
+      <li>Options → Engine → Enable “Analysis on module load”</li>
+      <li>Options → Engine → Configure analysis depth</li>
+    </ul>
+  </li>
+  <li><strong>Useful Plugins</strong>:
+    <ul>
+      <li>ScyllaHide: Anti-anti-debugging plugin</li>
+      <li>xAnalyzer: Enhanced analysis and annotation</li>
+      <li>Highlighter: Syntax highlighting for assembly</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="creating-an-isolated-analysis-environment">Creating an Isolated Analysis Environment</h3>
+
+<p>When debugging potentially malicious or unstable software, isolation is crucial:</p>
+
+<h4 id="virtual-machine-setup">Virtual Machine Setup</h4>
+
+<ol>
+  <li><strong>Create a dedicated VM</strong>:
+    <ul>
+      <li>Use VMware, VirtualBox, or Hyper-V</li>
+      <li>Install the same OS as the target binary’s intended environment</li>
+      <li>Take a clean snapshot before each analysis session</li>
+    </ul>
+  </li>
+  <li><strong>Network Configuration</strong>:
+    <ul>
+      <li>For malware: Use an isolated network or no network</li>
+      <li>For normal applications: Configure as needed for functionality</li>
+    </ul>
+  </li>
+  <li><strong>Shared Folders</strong>:
+    <ul>
+      <li>Set up a one-way shared folder for transferring files to the VM</li>
+      <li>Avoid sharing folders from VM to host for security</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="sandboxing-options">Sandboxing Options</h4>
+
+<p>For additional isolation within the OS:</p>
+
+<ul>
+  <li><strong>Windows</strong>: Use Windows Sandbox or restricted user accounts</li>
+  <li><strong>Linux</strong>: Use containers (Docker, LXC) or chroot environments</li>
+  <li><strong>Cross-platform</strong>: Consider tools like Firejail or Sandboxie</li>
+</ul>
+
+<h2 id="basic-debugging-techniques">Basic Debugging Techniques</h2>
+
+<p>With your environment set up, let’s explore fundamental debugging techniques for reverse engineering.</p>
+
+<h3 id="launching-and-attaching-to-processes">Launching and Attaching to Processes</h3>
+
+<p>There are two primary ways to begin debugging a program:</p>
+
+<h4 id="launching-a-program-under-the-debugger">Launching a Program Under the Debugger</h4>
+
+<p>This approach gives you control from the very start of execution:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb ./target_binary
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set </span>args parameter1 parameter2
+<span class="o">(</span>gdb<span class="o">)</span> run
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>File → Open</li>
+  <li>Select the target binary</li>
+  <li>Set command line arguments in the dialog</li>
+  <li>Click “Run”</li>
+</ol>
+
+<p><strong>In WinDbg</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>windbg -g c:\path\to\target.exe arg1 arg2
+</code></pre></div></div>
+
+<p>Launching under the debugger allows you to:</p>
+<ul>
+  <li>Set breakpoints before execution begins</li>
+  <li>Observe initialization code</li>
+  <li>Control the environment and arguments</li>
+</ul>
+
+<h4 id="attaching-to-a-running-process">Attaching to a Running Process</h4>
+
+<p>This approach is necessary when:</p>
+<ul>
+  <li>The program is already running</li>
+  <li>The program needs to be started in a specific way</li>
+  <li>You’re only interested in analyzing specific functionality after startup</li>
+</ul>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Attach by PID</span>
+gdb <span class="nt">-p</span> 1234
+
+<span class="c"># Attach by name</span>
+gdb <span class="nt">-p</span> <span class="si">$(</span>pgrep program_name<span class="si">)</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>File → Attach</li>
+  <li>Select the process from the list</li>
+</ol>
+
+<p><strong>In WinDbg</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>windbg -p 1234
+</code></pre></div></div>
+
+<p>When attaching to a running process, the program is paused, allowing you to set breakpoints before continuing execution.</p>
+
+<h3 id="setting-and-managing-breakpoints">Setting and Managing Breakpoints</h3>
+
+<p>Breakpoints are your primary tool for controlling execution and examining program state at specific points.</p>
+
+<h4 id="basic-breakpoint-types">Basic Breakpoint Types</h4>
+
+<p><strong>Execution Breakpoints</strong> pause when execution reaches a specific address:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break at function</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>main
+
+<span class="c"># Break at address</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> <span class="k">*</span>0x401000
+
+<span class="c"># Break at source line (if symbols available)</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>file.c:123
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Navigate to the target address</li>
+  <li>Press F2 or right-click → Breakpoint → Toggle</li>
+</ol>
+
+<p><strong>Data Breakpoints</strong> (watchpoints) pause when memory is accessed:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break on write to variable</span>
+<span class="o">(</span>gdb<span class="o">)</span> watch variable_name
+
+<span class="c"># Break on read or write to address</span>
+<span class="o">(</span>gdb<span class="o">)</span> awatch <span class="k">*</span>0x401000
+
+<span class="c"># Break on read from address</span>
+<span class="o">(</span>gdb<span class="o">)</span> rwatch <span class="k">*</span>0x401000
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Right-click on memory address</li>
+  <li>Select “Breakpoint” → “Hardware, access” (read/write) or “Hardware, write” (write only)</li>
+</ol>
+
+<h4 id="conditional-breakpoints">Conditional Breakpoints</h4>
+
+<p>Conditional breakpoints only trigger when a specified condition is true, allowing you to focus on specific scenarios:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break at function when argument is specific value</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>malloc <span class="k">if</span> <span class="nv">$rdi</span><span class="o">==</span>0x100
+
+<span class="c"># Break at address when register contains value</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> <span class="k">*</span>0x401000 <span class="k">if</span> <span class="nv">$eax</span><span class="o">==</span>0
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Set a normal breakpoint</li>
+  <li>Right-click the breakpoint</li>
+  <li>Select “Edit breakpoint”</li>
+  <li>Enter a condition like <code class="language-plaintext highlighter-rouge">[EAX]==0</code> or <code class="language-plaintext highlighter-rouge">arg1==0x100</code></li>
+</ol>
+
+<h4 id="api-and-library-function-breakpoints">API and Library Function Breakpoints</h4>
+
+<p>Breaking on API calls helps understand how a program interacts with the system:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break on libc function</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>malloc
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break printf</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>View → Symbols</li>
+  <li>Find the API function</li>
+  <li>Right-click → “Break on function”</li>
+</ol>
+
+<p><strong>In WinDbg</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bp kernel32!CreateFileW
+bp ntdll!NtCreateFile
+</code></pre></div></div>
+
+<h4 id="managing-multiple-breakpoints">Managing Multiple Breakpoints</h4>
+
+<p>As your analysis progresses, you’ll need to manage multiple breakpoints:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># List all breakpoints</span>
+<span class="o">(</span>gdb<span class="o">)</span> info breakpoints
+
+<span class="c"># Disable breakpoint</span>
+<span class="o">(</span>gdb<span class="o">)</span> disable 2
+
+<span class="c"># Enable breakpoint</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">enable </span>2
+
+<span class="c"># Delete breakpoint</span>
+<span class="o">(</span>gdb<span class="o">)</span> delete 2
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>View → Breakpoints</li>
+  <li>Use the breakpoint window to enable, disable, or remove breakpoints</li>
+</ol>
+
+<h3 id="execution-control-1">Execution Control</h3>
+
+<p>Controlling execution flow is essential for methodical analysis:</p>
+
+<h4 id="basic-execution-commands">Basic Execution Commands</h4>
+
+<p><strong>Continue Execution</strong>:</p>
+<ul>
+  <li>GDB: <code class="language-plaintext highlighter-rouge">continue</code> or <code class="language-plaintext highlighter-rouge">c</code></li>
+  <li>x64dbg: F9 or Debug → Run</li>
+  <li>WinDbg: <code class="language-plaintext highlighter-rouge">g</code></li>
+</ul>
+
+<p><strong>Step Into</strong> (execute one instruction, following calls):</p>
+<ul>
+  <li>GDB: <code class="language-plaintext highlighter-rouge">stepi</code> or <code class="language-plaintext highlighter-rouge">si</code></li>
+  <li>x64dbg: F7 or Debug → Step into</li>
+  <li>WinDbg: <code class="language-plaintext highlighter-rouge">t</code></li>
+</ul>
+
+<p><strong>Step Over</strong> (execute one instruction, treating calls as a single step):</p>
+<ul>
+  <li>GDB: <code class="language-plaintext highlighter-rouge">nexti</code> or <code class="language-plaintext highlighter-rouge">ni</code></li>
+  <li>x64dbg: F8 or Debug → Step over</li>
+  <li>WinDbg: <code class="language-plaintext highlighter-rouge">p</code></li>
+</ul>
+
+<p><strong>Step Out</strong> (execute until returning from current function):</p>
+<ul>
+  <li>GDB: <code class="language-plaintext highlighter-rouge">finish</code></li>
+  <li>x64dbg: Ctrl+F9 or Debug → Execute till return</li>
+  <li>WinDbg: <code class="language-plaintext highlighter-rouge">gu</code></li>
+</ul>
+
+<p><strong>Run to Cursor</strong>:</p>
+<ul>
+  <li>GDB: <code class="language-plaintext highlighter-rouge">advance *0x401000</code></li>
+  <li>x64dbg: F4 or right-click → “Run to selection”</li>
+  <li>WinDbg: <code class="language-plaintext highlighter-rouge">g @$ip=0x401000</code></li>
+</ul>
+
+<h4 id="execution-until-condition">Execution Until Condition</h4>
+
+<p>Sometimes you want to continue execution until a specific condition is met:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run until address</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">until</span> <span class="k">*</span>0x401000
+
+<span class="c"># Run until condition is true</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">while</span> <span class="nv">$eax</span> <span class="o">!=</span> 0
+<span class="o">&gt;</span> stepi
+<span class="o">&gt;</span> end
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Debug → Run until condition</li>
+  <li>Enter condition like <code class="language-plaintext highlighter-rouge">[EAX]==0</code></li>
+</ol>
+
+<h4 id="handling-loops">Handling Loops</h4>
+
+<p>When analyzing loops, you often want to observe multiple iterations without manually stepping:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set temporary breakpoint at loop end</span>
+<span class="o">(</span>gdb<span class="o">)</span> tbreak <span class="k">*</span>0x401030
+
+<span class="c"># Continue to that point</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+
+<span class="c"># Examine state, then repeat</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Set breakpoint at loop condition check</li>
+  <li>Use F9 (continue) to quickly iterate through the loop</li>
+</ol>
+
+<h3 id="examining-program-state">Examining Program State</h3>
+
+<p>Once execution is paused, you can examine the program’s state to understand its behavior.</p>
+
+<h4 id="register-inspection">Register Inspection</h4>
+
+<p>Registers contain the CPU’s working data and are crucial for understanding program flow:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Show all registers</span>
+<span class="o">(</span>gdb<span class="o">)</span> info registers
+
+<span class="c"># Show specific register</span>
+<span class="o">(</span>gdb<span class="o">)</span> p <span class="nv">$rax</span>
+
+<span class="c"># Show registers in hex</span>
+<span class="o">(</span>gdb<span class="o">)</span> p/x <span class="nv">$rax</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ul>
+  <li>Registers are displayed in the registers pane</li>
+  <li>Right-click a register to modify its value</li>
+</ul>
+
+<h4 id="memory-examination">Memory Examination</h4>
+
+<p>Viewing memory helps understand data structures and program state:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Examine memory as hex bytes</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/16xb 0x401000
+
+<span class="c"># Examine memory as 4-byte words</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/4xw 0x401000
+
+<span class="c"># Examine memory as string</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/s 0x401000
+
+<span class="c"># Examine memory pointed to by register</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/16xb <span class="nv">$rsp</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Right-click in the dump panel</li>
+  <li>Select “Go to” → “Expression”</li>
+  <li>Enter address or expression like <code class="language-plaintext highlighter-rouge">ESP</code> or <code class="language-plaintext highlighter-rouge">[EBP+8]</code></li>
+</ol>
+
+<h4 id="stack-inspection">Stack Inspection</h4>
+
+<p>The stack contains function call information and local variables:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Show stack frames</span>
+<span class="o">(</span>gdb<span class="o">)</span> backtrace
+
+<span class="c"># Select frame</span>
+<span class="o">(</span>gdb<span class="o">)</span> frame 2
+
+<span class="c"># Show frame info</span>
+<span class="o">(</span>gdb<span class="o">)</span> info frame
+
+<span class="c"># Show local variables</span>
+<span class="o">(</span>gdb<span class="o">)</span> info locals
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ul>
+  <li>The stack is displayed in the stack pane</li>
+  <li>Double-click addresses to follow pointers</li>
+  <li>Right-click → “Follow in disassembler” to see code referenced from the stack</li>
+</ul>
+
+<h4 id="data-structure-visualization">Data Structure Visualization</h4>
+
+<p>Understanding complex data structures is easier with proper visualization:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Print structure</span>
+<span class="o">(</span>gdb<span class="o">)</span> p <span class="k">*</span><span class="o">((</span>struct example_t<span class="k">*</span><span class="o">)</span>0x401000<span class="o">)</span>
+
+<span class="c"># Pretty print with indentation</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set </span>print pretty on
+<span class="o">(</span>gdb<span class="o">)</span> p <span class="k">*</span><span class="o">((</span>struct example_t<span class="k">*</span><span class="o">)</span>0x401000<span class="o">)</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg with Plugins</strong>:</p>
+<ul>
+  <li>Some plugins provide structure visualization</li>
+  <li>You can define structures in the “Types” window</li>
+</ul>
+
+<h3 id="tracing-and-logging">Tracing and Logging</h3>
+
+<p>Tracing records program execution for later analysis, which is valuable for understanding complex flows:</p>
+
+<h4 id="instruction-tracing">Instruction Tracing</h4>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Log all instructions to file</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set </span>logging on
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set </span>logging file trace.txt
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">while</span> <span class="nv">$pc</span> &lt; 0x401100
+<span class="o">&gt;</span> x/i <span class="nv">$pc</span>
+<span class="o">&gt;</span> stepi
+<span class="o">&gt;</span> end
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Trace → Instruction tracing</li>
+  <li>Configure options and start tracing</li>
+  <li>View results in the trace window</li>
+</ol>
+
+<h4 id="api-call-tracing">API Call Tracing</h4>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Use the “Run trace” feature with API call logging enabled</li>
+  <li>Filter for specific APIs of interest</li>
+</ol>
+
+<p><strong>In WinDbg</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Set up API logging
+!logexts.logi
+!logexts.logc kernel32!CreateFile*
+!logexts.logc ntdll!NtCreateFile
+g
+</code></pre></div></div>
+
+<h4 id="data-access-tracing">Data Access Tracing</h4>
+
+<p>Tracking how a program accesses specific memory can reveal algorithms and data flow:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Watch memory and log accesses</span>
+<span class="o">(</span>gdb<span class="o">)</span> watch <span class="k">*</span><span class="o">(</span>int<span class="k">*</span><span class="o">)</span>0x401000
+<span class="o">(</span>gdb<span class="o">)</span> commands
+<span class="o">&gt;</span> silent
+<span class="o">&gt;</span> p <span class="nv">$rip</span>
+<span class="o">&gt;</span> p <span class="nv">$rax</span>
+<span class="o">&gt;</span> <span class="k">continue</span>
+<span class="o">&gt;</span> end
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Set a hardware breakpoint on the memory of interest</li>
+  <li>Use the “Log” option in the breakpoint settings</li>
+</ol>
+
+<h2 id="debugging-scenarios-and-techniques">Debugging Scenarios and Techniques</h2>
+
+<p>Let’s explore specific debugging scenarios you’ll encounter in reverse engineering.</p>
+
+<h3 id="analyzing-function-calls-and-returns">Analyzing Function Calls and Returns</h3>
+
+<p>Understanding function behavior is central to reverse engineering:</p>
+
+<h4 id="tracking-function-parameters">Tracking Function Parameters</h4>
+
+<p>To understand what a function does, you need to know what data it receives:</p>
+
+<p><strong>x86-64 (System V - Linux/macOS)</strong>:</p>
+<ul>
+  <li>First 6 integer/pointer arguments: RDI, RSI, RDX, RCX, R8, R9</li>
+  <li>First 8 floating-point arguments: XMM0-XMM7</li>
+  <li>Additional arguments: on the stack (above RSP)</li>
+</ul>
+
+<p><strong>x86-64 (Microsoft - Windows)</strong>:</p>
+<ul>
+  <li>First 4 integer/pointer arguments: RCX, RDX, R8, R9</li>
+  <li>First 4 floating-point arguments: XMM0-XMM3</li>
+  <li>Additional arguments: on the stack (above RSP)</li>
+</ul>
+
+<p><strong>ARM64</strong>:</p>
+<ul>
+  <li>First 8 arguments: X0-X7</li>
+  <li>Additional arguments: on the stack</li>
+</ul>
+
+<p><strong>Example in GDB (Linux x86-64)</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break at function entry</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>target_function
+
+<span class="c"># When breakpoint hits, examine parameters</span>
+<span class="o">(</span>gdb<span class="o">)</span> p/x <span class="nv">$rdi</span>  <span class="c"># First parameter</span>
+<span class="o">(</span>gdb<span class="o">)</span> p/x <span class="nv">$rsi</span>  <span class="c"># Second parameter</span>
+</code></pre></div></div>
+
+<h4 id="analyzing-return-values">Analyzing Return Values</h4>
+
+<p>Return values indicate what a function produces:</p>
+
+<p><strong>x86-64</strong>:</p>
+<ul>
+  <li>Integer/pointer return values: RAX (with RDX for 128-bit values)</li>
+  <li>Floating-point return values: XMM0</li>
+</ul>
+
+<p><strong>ARM64</strong>:</p>
+<ul>
+  <li>Return values: X0 (with X1 for 128-bit values)</li>
+</ul>
+
+<p><strong>Example in x64dbg (Windows)</strong>:</p>
+<ol>
+  <li>Set breakpoint at function return (look for <code class="language-plaintext highlighter-rouge">ret</code> instruction)</li>
+  <li>When breakpoint hits, examine RAX for the return value</li>
+</ol>
+
+<h4 id="call-stack-analysis">Call Stack Analysis</h4>
+
+<p>The call stack shows how the program reached the current point:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>gdb<span class="o">)</span> backtrace
+<span class="c">#0  current_function (param=0x1) at file.c:123</span>
+<span class="c">#1  calling_function (param=0x2) at file.c:456</span>
+<span class="c">#2  main () at file.c:789</span>
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ul>
+  <li>View → Call Stack</li>
+  <li>Double-click entries to navigate to the calling code</li>
+</ul>
+
+<p>Analyzing the call stack helps understand program flow and identify the context in which functions are called.</p>
+
+<h3 id="debugging-loops-and-conditional-branches">Debugging Loops and Conditional Branches</h3>
+
+<p>Loops and branches form the core of program logic:</p>
+
+<h4 id="loop-analysis-techniques">Loop Analysis Techniques</h4>
+
+<p>To understand a loop’s purpose:</p>
+
+<ol>
+  <li><strong>Identify loop components</strong>:
+    <ul>
+      <li>Initialization (before the loop)</li>
+      <li>Condition (determines when to exit)</li>
+      <li>Body (operations performed each iteration)</li>
+      <li>Iteration (how variables change between iterations)</li>
+    </ul>
+  </li>
+  <li><strong>Set strategic breakpoints</strong>:
+    <ul>
+      <li>At the loop condition check</li>
+      <li>At critical operations within the loop</li>
+    </ul>
+  </li>
+  <li><strong>Observe patterns across iterations</strong>:
+    <ul>
+      <li>How do register/memory values change?</li>
+      <li>What’s the exit condition?</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example Approach</strong>:</p>
+<ol>
+  <li>Set breakpoint at loop start</li>
+  <li>Note initial values of key registers/variables</li>
+  <li>Step through one complete iteration</li>
+  <li>Note how values changed</li>
+  <li>Continue to next iteration and compare</li>
+</ol>
+
+<h4 id="conditional-branch-analysis">Conditional Branch Analysis</h4>
+
+<p>Conditional branches determine program flow based on conditions:</p>
+
+<ol>
+  <li><strong>Identify the condition being tested</strong>:
+    <ul>
+      <li>Look at comparison instructions (<code class="language-plaintext highlighter-rouge">cmp</code>, <code class="language-plaintext highlighter-rouge">test</code>)</li>
+      <li>Note which flags affect the branch (<code class="language-plaintext highlighter-rouge">jz</code>, <code class="language-plaintext highlighter-rouge">jg</code>, etc.)</li>
+    </ul>
+  </li>
+  <li><strong>Determine branch outcomes</strong>:
+    <ul>
+      <li>Follow both paths to understand what each does</li>
+      <li>Note how the program state differs between paths</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example in x64dbg</strong>:</p>
+<ol>
+  <li>Set breakpoint at the comparison instruction</li>
+  <li>When hit, note the values being compared</li>
+  <li>Use “Step into” to follow one path</li>
+  <li>Return to the comparison (restart or use snapshots)</li>
+  <li>Modify a register to force the other path</li>
+  <li>Compare the behavior of both paths</li>
+</ol>
+
+<h3 id="memory-analysis">Memory Analysis</h3>
+
+<p>Understanding how a program uses memory is crucial for reverse engineering:</p>
+
+<h4 id="tracking-memory-allocations">Tracking Memory Allocations</h4>
+
+<p>Monitoring memory allocations helps identify data structures and resource usage:</p>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break on malloc/free</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>malloc
+<span class="o">(</span>gdb<span class="o">)</span> commands
+<span class="o">&gt;</span> silent
+<span class="o">&gt;</span> p/x <span class="nv">$rdi</span>  <span class="c"># Size requested</span>
+<span class="o">&gt;</span> backtrace 1  <span class="c"># Show caller</span>
+<span class="o">&gt;</span> <span class="k">continue</span>
+<span class="o">&gt;</span> end
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Set breakpoints on memory allocation functions (malloc, HeapAlloc, VirtualAlloc)</li>
+  <li>When hit, note the size requested and the returned address</li>
+  <li>Set a memory write breakpoint on the allocated region to see how it’s initialized</li>
+</ol>
+
+<h4 id="buffer-analysis">Buffer Analysis</h4>
+
+<p>Buffers often contain important data like strings, structures, or network packets:</p>
+
+<ol>
+  <li><strong>Identify buffer boundaries</strong>:
+    <ul>
+      <li>Look for allocation sizes</li>
+      <li>Observe access patterns</li>
+    </ul>
+  </li>
+  <li><strong>Monitor buffer contents</strong>:
+    <ul>
+      <li>Set data breakpoints on the buffer</li>
+      <li>Log changes to understand processing</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example for String Processing</strong>:</p>
+<ol>
+  <li>Identify string buffer in memory</li>
+  <li>Set hardware breakpoint on write access</li>
+  <li>Continue execution to see how the program modifies the string</li>
+  <li>Infer the algorithm from the transformation pattern</li>
+</ol>
+
+<h4 id="pointer-tracking">Pointer Tracking</h4>
+
+<p>Tracking pointers helps understand complex data structures:</p>
+
+<ol>
+  <li><strong>Identify pointer initialization</strong>:
+    <ul>
+      <li>Look for addresses being stored in registers or memory</li>
+    </ul>
+  </li>
+  <li><strong>Follow pointer chains</strong>:
+    <ul>
+      <li>When a pointer is dereferenced, examine the target memory</li>
+      <li>Build a mental model of linked structures</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example in GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Examine pointer</span>
+<span class="o">(</span>gdb<span class="o">)</span> p/x <span class="nv">$rax</span>  <span class="c"># Contains pointer value 0x603010</span>
+
+<span class="c"># Examine memory at pointer target</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/10gx 0x603010
+
+<span class="c"># If target contains another pointer, follow it</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/10gx 0x705a20
+</code></pre></div></div>
+
+<h3 id="debugging-multi-threaded-applications">Debugging Multi-threaded Applications</h3>
+
+<p>Multi-threaded programs add complexity to debugging:</p>
+
+<h4 id="thread-enumeration-and-control">Thread Enumeration and Control</h4>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># List all threads</span>
+<span class="o">(</span>gdb<span class="o">)</span> info threads
+
+<span class="c"># Switch to specific thread</span>
+<span class="o">(</span>gdb<span class="o">)</span> thread 2
+
+<span class="c"># Run command in all threads</span>
+<span class="o">(</span>gdb<span class="o">)</span> thread apply all backtrace
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>View → Threads</li>
+  <li>Select a thread to switch context</li>
+  <li>Use the thread window to suspend/resume specific threads</li>
+</ol>
+
+<h4 id="synchronization-analysis">Synchronization Analysis</h4>
+
+<p>Understanding thread synchronization helps identify race conditions and deadlocks:</p>
+
+<ol>
+  <li><strong>Identify synchronization objects</strong>:
+    <ul>
+      <li>Mutexes, semaphores, critical sections</li>
+      <li>Look for API calls like <code class="language-plaintext highlighter-rouge">pthread_mutex_lock</code>, <code class="language-plaintext highlighter-rouge">EnterCriticalSection</code></li>
+    </ul>
+  </li>
+  <li><strong>Track lock acquisition and release</strong>:
+    <ul>
+      <li>Set breakpoints on synchronization functions</li>
+      <li>Note which thread holds which locks</li>
+    </ul>
+  </li>
+  <li><strong>Identify shared resources</strong>:
+    <ul>
+      <li>Look for memory accessed by multiple threads</li>
+      <li>Set hardware breakpoints to detect concurrent access</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="race-condition-debugging">Race Condition Debugging</h4>
+
+<p>Race conditions occur when thread timing affects program behavior:</p>
+
+<ol>
+  <li><strong>Manipulate thread execution</strong>:
+    <ul>
+      <li>Pause specific threads at critical points</li>
+      <li>Force different execution orders to reproduce the race</li>
+    </ul>
+  </li>
+  <li><strong>Use thread-specific breakpoints</strong>:
+    <ul>
+      <li>Set breakpoints that only trigger for specific threads</li>
+      <li>Compare behavior with different thread interleavings</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Break only in specific thread</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span><span class="k">function </span>thread 2 <span class="k">if </span>condition
+</code></pre></div></div>
+
+<h3 id="debugging-exception-handling">Debugging Exception Handling</h3>
+
+<p>Exception handling mechanisms affect control flow in non-obvious ways:</p>
+
+<h4 id="catching-exceptions">Catching Exceptions</h4>
+
+<p><strong>In GDB</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Catch all exceptions</span>
+<span class="o">(</span>gdb<span class="o">)</span> catch throw
+
+<span class="c"># Catch specific exception type (C++)</span>
+<span class="o">(</span>gdb<span class="o">)</span> catch throw std::runtime_error
+</code></pre></div></div>
+
+<p><strong>In x64dbg</strong>:</p>
+<ol>
+  <li>Options → Exceptions</li>
+  <li>Configure which exceptions to break on</li>
+</ol>
+
+<h4 id="analyzing-exception-handlers">Analyzing Exception Handlers</h4>
+
+<ol>
+  <li><strong>Identify exception registration</strong>:
+    <ul>
+      <li>Look for setup of try/catch blocks</li>
+      <li>On Windows, look for <code class="language-plaintext highlighter-rouge">__try</code>/<code class="language-plaintext highlighter-rouge">__except</code> or SEH registration</li>
+    </ul>
+  </li>
+  <li><strong>Track exception propagation</strong>:
+    <ul>
+      <li>When an exception occurs, follow its handling path</li>
+      <li>Note how the program recovers or cleans up</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example for Windows SEH</strong>:</p>
+<ol>
+  <li>Look for <code class="language-plaintext highlighter-rouge">push &lt;handler&gt;</code> followed by <code class="language-plaintext highlighter-rouge">mov fs:[0], esp</code> (x86) or similar patterns</li>
+  <li>Set breakpoints on the handler address</li>
+  <li>Force an exception to observe the handler in action</li>
+</ol>
+
+<h2 id="advanced-debugging-techniques">Advanced Debugging Techniques</h2>
+
+<p>Beyond basic debugging, several advanced techniques can provide deeper insights.</p>
+
+<h3 id="time-travel-debugging">Time Travel Debugging</h3>
+
+<p>Time travel debugging (TTD) or reverse debugging allows you to step backward through execution:</p>
+
+<h4 id="available-tools">Available Tools</h4>
+
+<ul>
+  <li><strong>WinDbg Preview</strong>: Supports TTD for Windows applications</li>
+  <li><strong>GDB</strong>: Provides reverse debugging with <code class="language-plaintext highlighter-rouge">record</code> and <code class="language-plaintext highlighter-rouge">reverse-*</code> commands</li>
+  <li><strong>UndoDB</strong>: Commercial reverse debugging for Linux</li>
+  <li><strong>rr</strong>: Open-source record and replay debugger for Linux</li>
+</ul>
+
+<h4 id="basic-usage">Basic Usage</h4>
+
+<p><strong>In GDB with rr</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Record execution</span>
+<span class="nv">$ </span>rr record ./program
+
+<span class="c"># Replay in debugger</span>
+<span class="nv">$ </span>rr replay
+
+<span class="c"># Navigate execution</span>
+<span class="o">(</span>rr<span class="o">)</span> <span class="k">continue</span>
+<span class="o">(</span>rr<span class="o">)</span> reverse-continue
+<span class="o">(</span>rr<span class="o">)</span> reverse-stepi
+</code></pre></div></div>
+
+<p><strong>In WinDbg Preview</strong>:</p>
+<ol>
+  <li>Launch with Time Travel Debugging</li>
+  <li>Record execution</li>
+  <li>Use timeline to navigate to points of interest</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">g-</code> (go backward) and <code class="language-plaintext highlighter-rouge">p-</code> (step backward)</li>
+</ol>
+
+<h4 id="benefits-for-reverse-engineering">Benefits for Reverse Engineering</h4>
+
+<p>Time travel debugging is particularly valuable for:</p>
+<ul>
+  <li>Tracking down the origin of unexpected values</li>
+  <li>Understanding complex sequences that are difficult to reproduce</li>
+  <li>Analyzing cause-effect relationships by moving backward from a crash or interesting state</li>
+</ul>
+
+<h3 id="scriptable-debugging">Scriptable Debugging</h3>
+
+<p>Debugger scripting extends your capabilities for automated analysis:</p>
+
+<h4 id="gdb-python-scripting">GDB Python Scripting</h4>
+
+<p>GDB has powerful Python integration:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># example.py - GDB Python script
+</span><span class="kn">import</span> <span class="nn">gdb</span>
+
+<span class="k">class</span> <span class="nc">FunctionEntryBreakpoint</span><span class="p">(</span><span class="n">gdb</span><span class="p">.</span><span class="n">Breakpoint</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FunctionEntryBreakpoint</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">(</span><span class="n">function_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">silent</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">call_count</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">call_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Get first 3 arguments on x86-64
+</span>        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="p">[</span><span class="s">'$rdi'</span><span class="p">,</span> <span class="s">'$rsi'</span><span class="p">,</span> <span class="s">'$rdx'</span><span class="p">]:</span>
+            <span class="n">args</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">gdb</span><span class="p">.</span><span class="n">parse_and_eval</span><span class="p">(</span><span class="n">reg</span><span class="p">)))</span>
+        
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Call #</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">call_count</span><span class="si">}</span><span class="s"> to </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">location</span><span class="si">}</span><span class="s"> with args: </span><span class="si">{</span><span class="s">', '</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>  <span class="c1"># Don't actually stop
+</span>
+<span class="c1"># Usage
+</span><span class="n">FunctionEntryBreakpoint</span><span class="p">(</span><span class="s">"malloc"</span><span class="p">)</span>
+<span class="n">gdb</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"run"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>To use this script:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">source </span>example.py
+</code></pre></div></div>
+
+<h4 id="windbg-javascriptnatvis">WinDbg JavaScript/NatVis</h4>
+
+<p>WinDbg supports JavaScript for automation and NatVis for visualization:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Log all calls to CreateFileW with filename</span>
+<span class="kd">function</span> <span class="nx">logCreateFile</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">filename</span> <span class="o">=</span> <span class="nx">host</span><span class="p">.</span><span class="nx">memory</span><span class="p">.</span><span class="nx">readWideString</span><span class="p">(</span><span class="nx">host</span><span class="p">.</span><span class="nx">currentThread</span><span class="p">.</span><span class="nx">registers</span><span class="p">.</span><span class="nx">rcx</span><span class="p">);</span>
+    <span class="nx">host</span><span class="p">.</span><span class="nx">diagnostics</span><span class="p">.</span><span class="nx">debugLog</span><span class="p">(</span><span class="s2">`CreateFileW: </span><span class="p">${</span><span class="nx">filename</span><span class="p">}</span><span class="s2">\n`</span><span class="p">);</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="c1">// Don't break execution</span>
+<span class="p">}</span>
+
+<span class="c1">// Set breakpoint</span>
+<span class="kd">const</span> <span class="nx">bp</span> <span class="o">=</span> <span class="nx">host</span><span class="p">.</span><span class="nx">namespace</span><span class="p">.</span><span class="nx">Debugger</span><span class="p">.</span><span class="nx">Utility</span><span class="p">.</span><span class="nx">Control</span><span class="p">.</span><span class="nx">SetBreakpointAtOffset</span><span class="p">(</span>
+    <span class="dl">"</span><span class="s2">kernel32!CreateFileW</span><span class="dl">"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">logCreateFile</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="x64dbg-scripting">x64dbg Scripting</h4>
+
+<p>x64dbg supports scripting through plugins and a built-in script engine:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// x64dbg script to log memory allocations
+bp VirtualAlloc
+log "VirtualAlloc(Size: {arg2}, Type: {arg3}, Protect: {arg4})"
+run
+goto VirtualAlloc
+</code></pre></div></div>
+
+<h3 id="debugging-obfuscated-code">Debugging Obfuscated Code</h3>
+
+<p>Obfuscated code deliberately resists analysis, requiring special techniques:</p>
+
+<h4 id="anti-debugging-detection-and-bypass">Anti-Debugging Detection and Bypass</h4>
+
+<p>Programs may detect debuggers through various methods:</p>
+
+<ol>
+  <li><strong>API-based detection</strong>:
+    <ul>
+      <li>Calls to <code class="language-plaintext highlighter-rouge">IsDebuggerPresent()</code>, <code class="language-plaintext highlighter-rouge">CheckRemoteDebuggerPresent()</code></li>
+      <li>Solution: Set breakpoints on these APIs and manipulate return values</li>
+    </ul>
+  </li>
+  <li><strong>PEB-based detection</strong>:
+    <ul>
+      <li>Checking <code class="language-plaintext highlighter-rouge">BeingDebugged</code> flag in Process Environment Block</li>
+      <li>Solution: Patch the PEB or use anti-anti-debugging plugins</li>
+    </ul>
+  </li>
+  <li><strong>Timing checks</strong>:
+    <ul>
+      <li>Measuring execution time to detect debugger slowdown</li>
+      <li>Solution: Patch timing functions or use hardware breakpoints</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example in x64dbg with ScyllaHide</strong>:</p>
+<ol>
+  <li>Plugins → ScyllaHide → Options</li>
+  <li>Enable relevant protections</li>
+  <li>Apply to the current process</li>
+</ol>
+
+<h4 id="dealing-with-self-modifying-code">Dealing with Self-Modifying Code</h4>
+
+<p>Self-modifying code changes itself during execution:</p>
+
+<ol>
+  <li><strong>Identify code generation</strong>:
+    <ul>
+      <li>Look for writes to executable memory</li>
+      <li>Set hardware breakpoints on code sections</li>
+    </ul>
+  </li>
+  <li><strong>Track modifications</strong>:
+    <ul>
+      <li>When code is modified, analyze the new instructions</li>
+      <li>Set breakpoints after modification to catch execution</li>
+    </ul>
+  </li>
+  <li><strong>Use memory snapshots</strong>:
+    <ul>
+      <li>Take snapshots at different stages</li>
+      <li>Compare to understand the transformation</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example Approach</strong>:</p>
+<ol>
+  <li>Set hardware write breakpoint on the code section</li>
+  <li>When hit, note what code is being written and by what function</li>
+  <li>Continue until the modified code executes</li>
+  <li>Analyze the purpose of the dynamic code generation</li>
+</ol>
+
+<h4 id="handling-virtualized-code">Handling Virtualized Code</h4>
+
+<p>Some protections use custom virtual machines to execute code:</p>
+
+<ol>
+  <li><strong>Identify the VM dispatcher</strong>:
+    <ul>
+      <li>Look for a dispatch loop with indirect jumps</li>
+      <li>Identify the virtual instruction pointer</li>
+    </ul>
+  </li>
+  <li><strong>Analyze VM instructions</strong>:
+    <ul>
+      <li>Break after each virtual instruction</li>
+      <li>Map virtual operations to real operations</li>
+    </ul>
+  </li>
+  <li><strong>Consider VM-level debugging</strong>:
+    <ul>
+      <li>Debug at the VM level rather than trying to follow the native code</li>
+      <li>Create scripts to interpret the VM state</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="kernel-and-driver-debugging">Kernel and Driver Debugging</h3>
+
+<p>Debugging at the kernel level requires special setup but provides deeper insights:</p>
+
+<h4 id="windows-kernel-debugging-setup">Windows Kernel Debugging Setup</h4>
+
+<ol>
+  <li><strong>On the target machine</strong>:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bcdedit /debug on
+bcdedit /dbgsettings serial debugport:1 baudrate:115200
+</code></pre></div>    </div>
+  </li>
+  <li><strong>On the host machine</strong>:
+    <ul>
+      <li>Connect via serial, USB, or network</li>
+      <li>Launch WinDbg: <code class="language-plaintext highlighter-rouge">windbg -k com:port=COM1,baud=115200</code></li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="linux-kernel-debugging">Linux Kernel Debugging</h4>
+
+<ol>
+  <li><strong>Configure the target kernel</strong>:
+    <ul>
+      <li>Add <code class="language-plaintext highlighter-rouge">kgdboc=ttyS0,115200</code> to kernel parameters</li>
+      <li>Boot with <code class="language-plaintext highlighter-rouge">nokaslr</code> to disable address randomization</li>
+    </ul>
+  </li>
+  <li><strong>On the host machine</strong>:
+    <ul>
+      <li>Connect GDB: <code class="language-plaintext highlighter-rouge">gdb ./vmlinux</code></li>
+      <li>Target remote: <code class="language-plaintext highlighter-rouge">target remote /dev/ttyS0</code></li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="driver-and-module-analysis">Driver and Module Analysis</h4>
+
+<p>For analyzing specific drivers:</p>
+
+<ol>
+  <li><strong>Set breakpoints on driver entry points</strong>:
+    <ul>
+      <li>Driver initialization functions</li>
+      <li>Device I/O control handlers</li>
+    </ul>
+  </li>
+  <li><strong>Monitor interactions with hardware</strong>:
+    <ul>
+      <li>I/O port access</li>
+      <li>Memory-mapped I/O operations</li>
+    </ul>
+  </li>
+  <li><strong>Analyze driver structures</strong>:
+    <ul>
+      <li>Device objects</li>
+      <li>I/O request packets</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Example in WinDbg</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>!drvobj drivername
+bp drivername!DriverEntry
+</code></pre></div></div>
+
+<h2 id="debugging-case-studies">Debugging Case Studies</h2>
+
+<p>Let’s examine practical debugging scenarios to illustrate these techniques.</p>
+
+<h3 id="case-study-1-analyzing-a-cryptographic-function">Case Study 1: Analyzing a Cryptographic Function</h3>
+
+<p>Imagine you’re reverse engineering a program that encrypts files, and you want to understand its algorithm.</p>
+
+<h4 id="initial-approach">Initial Approach</h4>
+
+<ol>
+  <li><strong>Identify the encryption function</strong>:
+    <ul>
+      <li>Look for file I/O followed by data transformation</li>
+      <li>Search for cryptographic constants or patterns</li>
+    </ul>
+  </li>
+  <li><strong>Set up the debugging environment</strong>:
+    <ul>
+      <li>Prepare a small test file with known content</li>
+      <li>Launch the program under the debugger</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="debugging-strategy">Debugging Strategy</h4>
+
+<ol>
+  <li><strong>Locate the encryption entry point</strong>:
+    <ul>
+      <li>Set breakpoints on file read/write functions</li>
+      <li>Follow the data flow after the file is read</li>
+    </ul>
+  </li>
+  <li><strong>Identify key data structures</strong>:
+    <ul>
+      <li>Look for the input buffer containing file data</li>
+      <li>Identify where the encryption key is stored</li>
+      <li>Find the output buffer for encrypted data</li>
+    </ul>
+  </li>
+  <li><strong>Analyze the transformation process</strong>:
+    <ul>
+      <li>Set data breakpoints on the input buffer</li>
+      <li>Step through the algorithm, noting how data changes</li>
+      <li>Look for characteristic operations (XOR, substitution, permutation)</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="example-debugging-session-x64dbg">Example Debugging Session (x64dbg)</h4>
+
+<ol>
+  <li><strong>Set API breakpoints</strong>:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bp CreateFileW
+bp ReadFile
+bp WriteFile
+</code></pre></div>    </div>
+  </li>
+  <li><strong>When ReadFile breaks</strong>:
+    <ul>
+      <li>Note the buffer address in the second parameter</li>
+      <li>Set a hardware breakpoint on that region</li>
+    </ul>
+  </li>
+  <li><strong>Follow the encryption process</strong>:
+    <ul>
+      <li>When the hardware breakpoint triggers, step through the code</li>
+      <li>Observe register operations and memory transformations</li>
+      <li>Identify patterns like block processing or rounds</li>
+    </ul>
+  </li>
+  <li><strong>Recognize the algorithm</strong>:
+    <ul>
+      <li>Compare observed operations with known algorithms</li>
+      <li>Look for distinctive constants or structures</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="results-and-documentation">Results and Documentation</h4>
+
+<p>After analysis, you might determine:</p>
+<ul>
+  <li>The algorithm is AES-256 in CBC mode</li>
+  <li>The key is derived from the password using PBKDF2</li>
+  <li>The IV is stored in the first 16 bytes of the output file</li>
+</ul>
+
+<p>This information allows you to implement a compatible decryption routine or analyze the security of the implementation.</p>
+
+<h3 id="case-study-2-reverse-engineering-a-protocol">Case Study 2: Reverse Engineering a Protocol</h3>
+
+<p>Suppose you need to understand a proprietary network protocol used by an application.</p>
+
+<h4 id="initial-approach-1">Initial Approach</h4>
+
+<ol>
+  <li><strong>Identify network-related functions</strong>:
+    <ul>
+      <li>Look for socket APIs or HTTP libraries</li>
+      <li>Set breakpoints on network send/receive functions</li>
+    </ul>
+  </li>
+  <li><strong>Prepare the environment</strong>:
+    <ul>
+      <li>Configure the application to connect to a test server</li>
+      <li>Set up network monitoring alongside debugging</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="debugging-strategy-1">Debugging Strategy</h4>
+
+<ol>
+  <li><strong>Capture the communication flow</strong>:
+    <ul>
+      <li>Break on socket functions to identify connection establishment</li>
+      <li>Monitor data sent and received</li>
+    </ul>
+  </li>
+  <li><strong>Analyze packet construction</strong>:
+    <ul>
+      <li>Set breakpoints before send operations</li>
+      <li>Examine memory buffers containing outgoing data</li>
+      <li>Trace backward to see how packets are built</li>
+    </ul>
+  </li>
+  <li><strong>Understand packet parsing</strong>:
+    <ul>
+      <li>Break after receive operations</li>
+      <li>Follow the processing of incoming data</li>
+      <li>Identify field extraction and validation</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="example-debugging-session-gdb">Example Debugging Session (GDB)</h4>
+
+<ol>
+  <li><strong>Set API breakpoints</strong>:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>send
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break </span>recv
+<span class="o">(</span>gdb<span class="o">)</span> commands 1
+<span class="o">&gt;</span> silent
+<span class="o">&gt;</span> <span class="nb">printf</span> <span class="s2">"send(%d bytes)</span><span class="se">\n</span><span class="s2">"</span>, <span class="nv">$rsi</span>
+<span class="o">&gt;</span> x/32xb <span class="nv">$rdi</span>
+<span class="o">&gt;</span> <span class="k">continue</span>
+<span class="o">&gt;</span> end
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Analyze packet structure</strong>:
+    <ul>
+      <li>When send/recv break, examine the data buffers</li>
+      <li>Look for patterns like headers, lengths, checksums</li>
+      <li>Note how values in the application correspond to packet fields</li>
+    </ul>
+  </li>
+  <li><strong>Map protocol states</strong>:
+    <ul>
+      <li>Observe the sequence of packets</li>
+      <li>Correlate with application state changes</li>
+      <li>Identify handshakes, authentication, data transfer phases</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="results-and-documentation-1">Results and Documentation</h4>
+
+<p>Your analysis might reveal:</p>
+<ul>
+  <li>The protocol uses a 8-byte header with message type, length, and sequence number</li>
+  <li>Authentication uses a challenge-response mechanism with HMAC</li>
+  <li>Data payloads are compressed with zlib and then encrypted with AES-128</li>
+</ul>
+
+<p>This understanding allows you to implement compatible clients, test security, or extend the protocol.</p>
+
+<h3 id="case-study-3-debugging-an-anti-debugging-protection">Case Study 3: Debugging an Anti-Debugging Protection</h3>
+
+<p>Consider a program with anti-debugging protections that you need to analyze.</p>
+
+<h4 id="initial-approach-2">Initial Approach</h4>
+
+<ol>
+  <li><strong>Identify anti-debugging behavior</strong>:
+    <ul>
+      <li>The program crashes or behaves differently when debugged</li>
+      <li>Look for known anti-debugging API calls</li>
+    </ul>
+  </li>
+  <li><strong>Prepare a bypass strategy</strong>:
+    <ul>
+      <li>Use anti-anti-debugging plugins</li>
+      <li>Be ready to patch code or manipulate execution</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="debugging-strategy-2">Debugging Strategy</h4>
+
+<ol>
+  <li><strong>Detect anti-debugging techniques</strong>:
+    <ul>
+      <li>Set breakpoints on suspicious APIs:
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bp IsDebuggerPresent
+bp CheckRemoteDebuggerPresent
+bp NtQueryInformationProcess
+bp GetTickCount
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Analyze and bypass each check</strong>:
+    <ul>
+      <li>When a check is hit, understand its mechanism</li>
+      <li>Patch the code or manipulate return values to bypass</li>
+    </ul>
+  </li>
+  <li><strong>Handle timing-based detection</strong>:
+    <ul>
+      <li>Look for code that measures execution time</li>
+      <li>Patch timing functions or the comparison logic</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="example-debugging-session-x64dbg-with-scyllahide">Example Debugging Session (x64dbg with ScyllaHide)</h4>
+
+<ol>
+  <li><strong>Apply general protections</strong>:
+    <ul>
+      <li>Enable ScyllaHide with common options</li>
+    </ul>
+  </li>
+  <li><strong>Handle specific checks</strong>:
+    <ul>
+      <li>When IsDebuggerPresent is called, modify RAX to 0 after return</li>
+      <li>For timing checks, modify the comparison result</li>
+    </ul>
+  </li>
+  <li><strong>Deal with PEB access</strong>:
+    <ul>
+      <li>Set hardware breakpoint on the PEB.BeingDebugged byte</li>
+      <li>When hit, step through and modify the loaded value</li>
+    </ul>
+  </li>
+  <li><strong>Patch code if necessary</strong>:
+    <ul>
+      <li>Change conditional jumps to force the non-debugging path</li>
+      <li>NOP out entire check sequences</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="results-and-documentation-2">Results and Documentation</h4>
+
+<p>Your analysis might reveal:</p>
+<ul>
+  <li>The program uses 5 different anti-debugging techniques</li>
+  <li>The main protection is a timing-based check in the initialization routine</li>
+  <li>After bypassing protections, the program reveals hidden functionality</li>
+</ul>
+
+<p>This understanding allows you to reliably debug the program for further analysis.</p>
+
+<h2 id="debugging-tools-reference">Debugging Tools Reference</h2>
+
+<p>Here’s a reference of popular debugging tools and their key features:</p>
+
+<h3 id="gdb-gnu-debugger">GDB (GNU Debugger)</h3>
+
+<p><strong>Platform</strong>: Linux, macOS, Windows (with limitations)</p>
+
+<p><strong>Key Features</strong>:</p>
+<ul>
+  <li>Command-line interface with powerful scripting</li>
+  <li>Python API for extensions</li>
+  <li>Remote debugging capability</li>
+  <li>Supports many architectures and languages</li>
+</ul>
+
+<p><strong>Essential Commands</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Starting GDB</span>
+gdb ./program                <span class="c"># Launch with program</span>
+gdb <span class="nt">-p</span> PID                   <span class="c"># Attach to process</span>
+
+<span class="c"># Breakpoints</span>
+<span class="nb">break </span><span class="k">function</span>               <span class="c"># Break at function</span>
+<span class="nb">break</span> <span class="k">*</span>0x12345678           <span class="c"># Break at address</span>
+watch variable               <span class="c"># Break on variable change</span>
+
+<span class="c"># Execution control</span>
+run <span class="o">[</span>args]                   <span class="c"># Start program</span>
+<span class="k">continue</span>                     <span class="c"># Continue execution</span>
+stepi                        <span class="c"># Step one instruction</span>
+nexti                        <span class="c"># Step over calls</span>
+finish                       <span class="c"># Run until function returns</span>
+
+<span class="c"># Examination</span>
+info registers               <span class="c"># Show registers</span>
+x/16xb address              <span class="c"># Examine 16 hex bytes</span>
+backtrace                    <span class="c"># Show call stack</span>
+info locals                  <span class="c"># Show local variables</span>
+</code></pre></div></div>
+
+<h3 id="x64dbgx32dbg">x64dbg/x32dbg</h3>
+
+<p><strong>Platform</strong>: Windows</p>
+
+<p><strong>Key Features</strong>:</p>
+<ul>
+  <li>User-friendly GUI</li>
+  <li>Extensive plugin system</li>
+  <li>Good visualization of memory and structures</li>
+  <li>Built-in assembler and patching</li>
+</ul>
+
+<p><strong>Key Operations</strong>:</p>
+<ul>
+  <li>F2: Toggle breakpoint</li>
+  <li>F7: Step into</li>
+  <li>F8: Step over</li>
+  <li>F9: Run/continue</li>
+  <li>Ctrl+F9: Execute until return</li>
+  <li>Right-click for context-specific options</li>
+</ul>
+
+<h3 id="windbg">WinDbg</h3>
+
+<p><strong>Platform</strong>: Windows</p>
+
+<p><strong>Key Features</strong>:</p>
+<ul>
+  <li>Kernel and user-mode debugging</li>
+  <li>Time Travel Debugging (Preview version)</li>
+  <li>Extensive symbol support</li>
+  <li>Powerful scripting with JavaScript</li>
+</ul>
+
+<p><strong>Essential Commands</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Breakpoints
+bp module!function          # Break at function
+ba r/w/e size address       # Hardware breakpoint
+
+# Execution
+g                           # Go/continue
+t                           # Trace (step into)
+p                           # Step over
+gu                          # Go up (until return)
+
+# Examination
+r                           # Show registers
+db/dw/dd/dq address         # Dump bytes/words/dwords/qwords
+k                           # Show stack trace
+!analyze -v                  # Analyze exception
+</code></pre></div></div>
+
+<h3 id="lldb">LLDB</h3>
+
+<p><strong>Platform</strong>: macOS, Linux, Windows</p>
+
+<p><strong>Key Features</strong>:</p>
+<ul>
+  <li>Part of the LLVM project</li>
+  <li>Similar command structure to GDB</li>
+  <li>Excellent C++ and Objective-C support</li>
+  <li>Extensible with Python</li>
+</ul>
+
+<p><strong>Essential Commands</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Starting LLDB</span>
+lldb program                 <span class="c"># Launch with program</span>
+lldb <span class="nt">-p</span> PID                  <span class="c"># Attach to process</span>
+
+<span class="c"># Breakpoints</span>
+breakpoint <span class="nb">set</span> <span class="nt">-n</span> <span class="k">function</span>   <span class="c"># Break at function</span>
+breakpoint <span class="nb">set</span> <span class="nt">-a</span> 0x12345678 <span class="c"># Break at address</span>
+watchpoint <span class="nb">set</span> <span class="nt">-v</span> variable   <span class="c"># Break on variable change</span>
+
+<span class="c"># Execution</span>
+run <span class="o">[</span>args]                   <span class="c"># Start program</span>
+<span class="k">continue</span>                     <span class="c"># Continue execution</span>
+thread step-inst             <span class="c"># Step one instruction</span>
+thread step-inst-over        <span class="c"># Step over calls</span>
+thread step-out              <span class="c"># Run until function returns</span>
+
+<span class="c"># Examination</span>
+register <span class="nb">read</span>                <span class="c"># Show registers</span>
+memory <span class="nb">read</span> <span class="nt">-fx</span> <span class="nt">-c16</span> address <span class="c"># Examine 16 hex bytes</span>
+bt                           <span class="c"># Show call stack</span>
+frame variable               <span class="c"># Show local variables</span>
+</code></pre></div></div>
+
+<h3 id="radare2cutter">Radare2/Cutter</h3>
+
+<p><strong>Platform</strong>: Cross-platform</p>
+
+<p><strong>Key Features</strong>:</p>
+<ul>
+  <li>Combined disassembler and debugger</li>
+  <li>Highly scriptable</li>
+  <li>Visual mode for navigation</li>
+  <li>Cutter provides a GUI interface</li>
+</ul>
+
+<p><strong>Essential Commands</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Starting radare2 in debug mode</span>
+r2 <span class="nt">-d</span> program                <span class="c"># Launch with program</span>
+r2 <span class="nt">-d</span> pid://PID              <span class="c"># Attach to process</span>
+
+<span class="c"># Breakpoints</span>
+db <span class="k">function</span>                  <span class="c"># Break at function</span>
+db 0x12345678               <span class="c"># Break at address</span>
+dcr                          <span class="c"># Continue until ret</span>
+
+<span class="c"># Execution</span>
+dc                           <span class="c"># Continue execution</span>
+ds                           <span class="c"># Step one instruction</span>
+dso                          <span class="c"># Step over calls</span>
+dbt                          <span class="c"># Show backtrace</span>
+
+<span class="c"># Examination</span>
+dr                           <span class="c"># Show registers</span>
+px 16 @ address             <span class="c"># Examine 16 hex bytes</span>
+afl                          <span class="c"># List functions</span>
+Vpp                          <span class="c"># Enter visual mode</span>
+</code></pre></div></div>
+
+<h2 id="summary">Summary</h2>
+
+<p>Debugging is a powerful dynamic analysis technique that allows you to observe and control program execution in real-time. In this chapter, we’ve explored the fundamentals of debugging for reverse engineering:</p>
+
+<ul>
+  <li><strong>How debuggers work</strong>: The mechanisms that allow debuggers to control and observe programs</li>
+  <li><strong>Setting up a debugging environment</strong>: Choosing and configuring the right tools for your target</li>
+  <li><strong>Basic debugging techniques</strong>: Setting breakpoints, controlling execution, and examining program state</li>
+  <li><strong>Advanced scenarios</strong>: Analyzing functions, loops, memory usage, and multi-threaded code</li>
+  <li><strong>Specialized techniques</strong>: Time travel debugging, scripting, and handling obfuscated code</li>
+  <li><strong>Practical case studies</strong>: Real-world examples of using debugging for reverse engineering tasks</li>
+</ul>
+
+<p>Mastering debugging techniques transforms your reverse engineering capabilities, allowing you to directly observe program behavior rather than inferring it from static code. While static analysis provides the map, debugging lets you explore the territory, revealing the actual paths taken during execution and the real-time transformation of data.</p>
+
+<p>In the next chapter, we’ll build on these debugging skills to explore dynamic binary instrumentation, a technique that allows even more powerful runtime analysis by injecting custom code into the target program.</p>
+
+<h2 id="exercises">Exercises</h2>
+
+<ol>
+  <li>
+    <p><strong>Basic Debugging Practice</strong>: Choose a simple open-source utility and use a debugger to trace its execution from start to finish. Document the main functions called, their parameters, and return values.</p>
+  </li>
+  <li>
+    <p><strong>Algorithm Analysis</strong>: Find a program that performs encryption or hashing. Use debugging to identify the algorithm by setting breakpoints and observing how the data is transformed.</p>
+  </li>
+  <li>
+    <p><strong>Anti-Debugging Challenge</strong>: Create a simple program with basic anti-debugging checks (IsDebuggerPresent, timing checks, etc.). Then use a debugger to bypass these protections without modifying the executable file.</p>
+  </li>
+  <li>
+    <p><strong>Memory Corruption Investigation</strong>: Write a program with a deliberate buffer overflow bug. Use a debugger to analyze how the overflow corrupts memory and affects program execution.</p>
+  </li>
+  <li>
+    <p><strong>Multi-threaded Debugging</strong>: Create a program with two threads that share data. Use debugging to identify potential race conditions by manipulating thread execution order.</p>
+  </li>
+  <li>
+    <p><strong>Debugger Scripting</strong>: Write a debugger script (for GDB, WinDbg, or x64dbg) that automatically logs all calls to memory allocation functions along with their parameters and return values.</p>
+  </li>
+  <li>
+    <p><strong>Protocol Reverse Engineering</strong>: Use a debugger to analyze how a web browser constructs HTTP requests. Break on network functions and examine the buffers to understand the protocol structure.</p>
+  </li>
+</ol>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <h2 class="footer-heading">Inside the Machine</h2>
+        <p>A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.
+</p>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Contact</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:immadmohit@gmail.com">immadmohit@gmail.com</a></li>
+          <li><a href="https://github.com/mohitmishra786">GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Quick Links</h2>
+        <ul class="page-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/chapters">Chapters</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2025 Mohit Mishra. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+  
+  <script src="/assets/js/theme-toggle.js"></script>
+</body>
+</html>
