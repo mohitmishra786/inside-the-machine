@@ -13,22 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # Use GitHub Actions' cache to cache dependencies on servers
-      - uses: actions/cache@v4
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-      
       # Run our combined preparation script
       - name: Prepare site for GitHub Pages
         run: |
           chmod +x ./prepare_for_github.sh
           ./prepare_for_github.sh
       
-      # Standard setup for Jekyll
-      - uses: helaili/jekyll-action@v2
+      # Use a simpler approach with jekyll/builder
+      - name: Build and deploy with jekyll/builder
+        uses: actions/jekyll-build-pages@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target_branch: gh-pages
+          source: ./
+          destination: ./_site
+      
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site

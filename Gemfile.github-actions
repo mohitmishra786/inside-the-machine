@@ -1,0 +1,13 @@
+source "https://rubygems.org"
+
+# Use the github-pages gem
+gem "github-pages"
+
+# Add faraday-retry for GitHub Pages
+gem "faraday-retry"
+
+# Specify a compatible version of ffi that works with RubyGems 3.1.6
+gem "ffi", "= 1.15.5"
+
+# For Ruby 3.0+ compatibility
+gem "webrick", "~> 1.7"
