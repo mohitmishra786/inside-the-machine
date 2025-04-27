@@ -13,6 +13,31 @@ layout: default
     </div>
   </section>
 
+  <section class="book-progress">
+    <h2>Book Progress</h2>
+    {% assign total_chapters = 17 %}
+    {% assign completed_chapters = site.chapters | size %}
+    {% assign progress_percent = completed_chapters | times: 100 | divided_by: total_chapters %}
+    
+    <div class="progress-bar-container">
+      <div class="progress-bar" style="width: {{ progress_percent }}%;"></div>
+    </div>
+    <p class="progress-text">{{ completed_chapters }} of {{ total_chapters }} chapters available ({{ progress_percent }}% complete)</p>
+    
+    {% if completed_chapters > 0 %}
+    <div class="latest-chapters">
+      <h3>Latest Chapters</h3>
+      <ul>
+        {% assign latest_chapters = site.chapters | sort: "order" | reverse | limit: 3 %}
+        {% for chapter in latest_chapters %}
+        <li><a href="{{ chapter.url | relative_url }}">{{ chapter.title }}</a></li>
+        {% endfor %}
+      </ul>
+      <a href="{{ '/chapters' | relative_url }}" class="view-all">View all available chapters →</a>
+    </div>
+    {% endif %}
+  </section>
+
   <section class="book-overview">
     <h2>What's Inside</h2>
     <div class="book-parts">
@@ -57,3 +82,42 @@ layout: default
     </div>
   </section>
 </div>
+
+<style>
+  .progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: var(--color-button-secondary-bg);
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: var(--color-button-primary-bg);
+    border-radius: 10px;
+  }
+  
+  .progress-text {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .latest-chapters {
+    margin: 30px 0;
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+  }
+  
+  .latest-chapters h3 {
+    margin-top: 0;
+  }
+  
+  .view-all {
+    display: block;
+    margin-top: 15px;
+    text-align: right;
+  }
+</style>

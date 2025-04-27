@@ -4,8 +4,25 @@ title: About the Book
 ---
 
 <div class="about-page">
-  <h1>About the Book</h1>
-  
+  <h1>About the Book</h1>  
+  <div class="book-status">
+    <h2>Book Status</h2>
+    {% assign total_chapters = 17 %}
+    {% assign completed_chapters = site.chapters | size %}
+    {% assign progress_percent = completed_chapters | times: 100 | divided_by: total_chapters %}
+    
+    <div class="progress-bar-container">
+      <div class="progress-bar" style="width: {{ progress_percent }}%;"></div>
+    </div>
+    <p class="progress-text">{{ completed_chapters }} of {{ total_chapters }} chapters available ({{ progress_percent }}% complete)</p>
+    
+    <p>This book is being written and published incrementally. Currently, we have sample chapters available, with more chapters being added regularly. The complete book will contain 17 chapters across 6 parts, covering the entire spectrum of reverse engineering from fundamentals to advanced techniques.</p>
+    
+    <p>You can subscribe to updates by watching the <a href="https://github.com/mohitmishra786/inside-the-machine" target="_blank">GitHub repository</a>. Each new chapter will be announced through GitHub releases.</p>
+    
+    <h3>Estimated Completion Timeline</h3>
+    <p>The book is expected to be completed by the end of 2024, with new chapters released monthly. Check the <a href="https://github.com/mohitmishra786/inside-the-machine/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a> for the most recent updates.</p>
+  </div>  
   <h2>Who This Book Is For</h2>
   <p>When software professionals encounter complex problems, they often face contradictions and struggle to find solutions. To overcome these challenges, it's crucial to view tough problems as opportunities for significant rewards. Embracing difficult challenges can lead to valuable insights and breakthroughs.</p>
   
