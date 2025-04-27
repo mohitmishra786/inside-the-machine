@@ -114,7 +114,7 @@ if [ -f "assets/css/main.scss" ]; then
   
   # Update the theme import if needed
   if grep -q "@import 'minima';" "assets/css/main.scss"; then
-    sed -i 's/@import \'minima\';/@import \'jekyll-theme-primer\';/' assets/css/main.scss
+    sed -i "s/@import 'minima';/@import 'jekyll-theme-primer';/" assets/css/main.scss
     echo "  Updated theme import in assets/css/main.scss"
   fi
 elif [ -f "assets/css/main.css" ]; then
