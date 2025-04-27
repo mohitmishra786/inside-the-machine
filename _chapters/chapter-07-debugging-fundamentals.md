@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 7: Debugging Fundamentals"
 part: "Part 3: Dynamic Analysis and Debugging"

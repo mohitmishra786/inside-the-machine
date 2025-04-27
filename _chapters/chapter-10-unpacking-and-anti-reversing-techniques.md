@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 10: Unpacking and Anti-Reversing Techniques"
 part: "Part 4: Advanced Reverse Engineering"

@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 1: Introduction to Reverse Engineering"
 part: "Part 1: Reverse Engineering Fundamentals"

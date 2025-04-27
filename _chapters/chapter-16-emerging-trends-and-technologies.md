@@ -1,9 +1,11 @@
 ---
+
 layout: chapter
 title: "Chapter 16: Emerging Trends and Technologies"
 part: "Part 6: Future of Reverse Engineering"
 order: 16
 ---
+
 
 *Part 6: Future of Reverse Engineering*
 

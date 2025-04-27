@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 3: Reverse Engineering Tools and Techniques"
 part: "Part 1: Reverse Engineering Fundamentals"

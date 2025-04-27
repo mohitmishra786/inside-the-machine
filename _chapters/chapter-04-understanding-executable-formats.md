@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 4: Understanding Executable Formats"
 part: "Part 2: Disassembly and Analysis"

@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 11: Hardware-Assisted Reverse Engineering"
 part: "Part 4: Advanced Reverse Engineering"

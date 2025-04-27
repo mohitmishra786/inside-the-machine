@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 12: Reverse Engineering Embedded Systems"
 part: "Part 4: Advanced Reverse Engineering"

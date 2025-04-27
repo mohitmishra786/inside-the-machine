@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 2: Ethical Considerations in Reverse Engineering"
 part: "Part 1: Reverse Engineering Fundamentals"

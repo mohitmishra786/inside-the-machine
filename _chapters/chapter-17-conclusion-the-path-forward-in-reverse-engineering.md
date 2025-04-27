@@ -1,9 +1,11 @@
 ---
+
 layout: chapter
 title: "Chapter 17: Conclusion: The Path Forward in Reverse Engineering"
 part: "Part 6: Future of Reverse Engineering"
 order: 17
 ---
+
 
 *Part 6: Future of Reverse Engineering*
 

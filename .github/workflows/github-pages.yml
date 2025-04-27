@@ -19,8 +19,8 @@ jobs:
           chmod +x ./prepare_for_github.sh
           ./prepare_for_github.sh
       
-      # Use a simpler approach with jekyll/builder
-      - name: Build and deploy with jekyll/builder
+      # Use Jekyll build pages action
+      - name: Build Jekyll site
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./

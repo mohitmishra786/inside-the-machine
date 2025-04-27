@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 8: Debugging Techniques"
 part: "Part 3: Dynamic Analysis and Debugging"

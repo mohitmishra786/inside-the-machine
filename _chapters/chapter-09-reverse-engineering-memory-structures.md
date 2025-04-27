@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 9: Reverse Engineering Memory Structures"
 part: "Part 3: Dynamic Analysis and Debugging"

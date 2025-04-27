@@ -1,4 +1,5 @@
 ---
+
 layout: chapter
 title: "Chapter 6: Static Code Analysis"
 part: "Part 2: Disassembly and Analysis"
