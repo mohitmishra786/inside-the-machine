@@ -54,3 +54,9 @@ exclude:
   - vendor
   - .git
   - LICENSE
+  - Part-1-Fundamentals
+  - Part-2-Disassembly
+  - Part-3-Dynamic-Analysis
+  - Part-4-Advanced
+  - Part-5-Applications
+  - Part-6-Future
