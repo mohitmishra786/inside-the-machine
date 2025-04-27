@@ -11,3 +11,6 @@ gem "ffi", "= 1.15.5"
 
 # For Ruby 3.0+ compatibility
 gem "webrick", "~> 1.7"
+
+# Add minima theme explicitly
+gem "minima", "~> 2.5"

@@ -1,11 +1,14 @@
 # Site settings
 title: Inside the Machine
 subtitle: A Practical Approach to Reverse Engineering for Developers
-description: >-
+description: >
   A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies
   to extract valuable insights from software systems.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://mohitmishra786.github.io/inside-the-machine" # the base hostname & protocol for your site
+
+# Theme settings
+theme: jekyll-theme-primer
 
 # Author information
 author:

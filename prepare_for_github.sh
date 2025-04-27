@@ -61,8 +61,13 @@ done
 # Step 3: Use GitHub Pages specific Gemfile
 echo "Step 3: Setting up GitHub Pages Gemfile..."
 
-# Create a GitHub Pages compatible Gemfile
-cat > Gemfile << EOL
+# Use the existing GitHub Pages Gemfile if it exists
+if [ -f "Gemfile.github-actions" ]; then
+  cp Gemfile.github-actions Gemfile
+  echo "  Created GitHub Pages compatible Gemfile from Gemfile.github-actions"
+else
+  # Create a GitHub Pages compatible Gemfile
+  cat > Gemfile << EOL
 source "https://rubygems.org"
 
 # Use GitHub Pages gem for compatibility
@@ -72,7 +77,10 @@ gem "github-pages", group: :jekyll_plugins
 gem "faraday-retry"
 
 # Specify a compatible version of ffi for GitHub Actions
-gem "ffi", "~> 1.15.0"
+gem "ffi", "= 1.15.5"
+
+# Add minima theme explicitly
+gem "minima", "~> 2.5"
 
 # Additional plugins
 group :jekyll_plugins do
@@ -84,7 +92,8 @@ end
 gem "webrick", "~> 1.7"
 EOL
 
-echo "  Created GitHub Pages compatible Gemfile"
+  echo "  Created GitHub Pages compatible Gemfile"
+fi
 
 # Step 4: Ensure the assets/css directory exists
 echo "Step 4: Setting up CSS..."
@@ -102,11 +111,17 @@ if [ -f "assets/css/main.scss" ]; then
   else
     echo "  assets/css/main.scss already has front matter"
   fi
+  
+  # Update the theme import if needed
+  if grep -q "@import 'minima';" "assets/css/main.scss"; then
+    sed -i 's/@import \'minima\';/@import \'jekyll-theme-primer\';/' assets/css/main.scss
+    echo "  Updated theme import in assets/css/main.scss"
+  fi
 elif [ -f "assets/css/main.css" ]; then
   # If only CSS exists, create basic SCSS with front matter for GitHub Pages
   echo "---" > assets/css/main.scss
   echo "---" >> assets/css/main.scss
-  echo "@import 'minima';" >> assets/css/main.scss 
+  echo "@import 'jekyll-theme-primer';" >> assets/css/main.scss 
   echo "" >> assets/css/main.scss
   cat assets/css/main.css >> assets/css/main.scss
   echo "  Created assets/css/main.scss with front matter"
@@ -117,22 +132,31 @@ else
   # Create a basic SCSS file with front matter
   echo "---" > assets/css/main.scss
   echo "---" >> assets/css/main.scss
-  echo "@import 'minima';" >> assets/css/main.scss
+  echo "@import 'jekyll-theme-primer';" >> assets/css/main.scss
   echo "  Created basic assets/css/main.scss"
 fi
 
 # Step 5: Update _config.yml for GitHub Pages if needed
 echo "Step 5: Checking _config.yml..."
 if [ -f "_config.yml" ]; then
+  # Check if theme is set correctly
+  if ! grep -q "^theme:" "_config.yml"; then
+    echo "theme: jekyll-theme-primer" >> "_config.yml"
+    echo "  Added theme to _config.yml"
+  elif grep -q "^theme: minima" "_config.yml"; then
+    sed -i 's/^theme: minima/theme: jekyll-theme-primer/' "_config.yml"
+    echo "  Updated theme in _config.yml"
+  fi
+  
   # Check if baseurl is set correctly
   if ! grep -q "^baseurl:" "_config.yml"; then
-    echo "baseurl: '/inside-the-machine'" >> _config.yml
+    echo "baseurl: '/inside-the-machine'" >> "_config.yml"
     echo "  Added baseurl to _config.yml"
   fi
   
   # Check if url is set correctly
   if ! grep -q "^url:" "_config.yml"; then
-    echo "url: 'https://mohitmishra786.github.io'" >> _config.yml
+    echo "url: 'https://mohitmishra786.github.io'" >> "_config.yml"
     echo "  Added url to _config.yml"
   fi
 else
