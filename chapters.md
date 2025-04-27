@@ -10,8 +10,6 @@ title: Table of Contents
 </p>
 
 <div class="chapters-list">
-  <h1>Table of Contents</h1>
-  
   {% assign parts = site.chapters | group_by: "part" | sort: "name" %}
   {% for part in parts %}
     <h2 class="part-title">{{ part.name }}</h2>

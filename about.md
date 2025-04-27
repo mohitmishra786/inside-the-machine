@@ -43,7 +43,7 @@ title: About the Book
   </ul>
   
   <h2>About the Author</h2>
-  <p>Mohit Mishra is a software engineer and security researcher with extensive experience in reverse engineering. With a passion for understanding how systems work at their core, he has spent years exploring the inner workings of software and hardware.</p>
+  <p>Mohit Mishra is a software engineer with experience in reverse engineering. With a passion for understanding how systems work at their core, he has spent years exploring the inner workings of software and hardware.</p>
   
   <h2>How to Contact</h2>
   <p>For additional information, updates, or support related to this book, please visit the webpage (hosted via GitHub Pages).</p>
