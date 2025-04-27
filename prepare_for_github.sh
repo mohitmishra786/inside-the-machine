@@ -163,8 +163,5 @@ else
   echo "  Warning: _config.yml not found"
 fi
 
-echo "\nSite preparation complete!"
-echo "Next steps:"
-echo "1. Commit and push your changes to GitHub"
-echo "2. GitHub Actions will build and deploy your site"
-echo "3. Visit https://mohitmishra786.github.io/inside-the-machine to see your site"
+echo -e "\nSite preparation complete!"
+echo -e "Next steps:\n1. Commit and push your changes to GitHub\n2. GitHub Actions will build and deploy your site\n3. Visit https://mohitmishra786.github.io/inside-the-machine to see your site"
