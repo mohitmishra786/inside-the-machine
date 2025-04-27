@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-# Use GitHub Pages gem for compatibility
-gem "github-pages", group: :jekyll_plugins
+# Use GitHub Pages gem
+gem "github-pages"
 
 # Add faraday-retry for GitHub Pages
 gem "faraday-retry"

@@ -7,8 +7,6 @@ order: 11
 ---
 
 
-*Part 4: Advanced Reverse Engineering*
-
 While software-based reverse engineering techniques are powerful, they have limitations. Hardware-assisted approaches provide capabilities that purely software methods cannot match. This chapter explores specialized hardware tools and techniques that enable deeper analysis of software, firmware, and embedded systems. We'll examine how hardware interfaces can bypass software protections, provide deeper visibility into system operation, and enable analysis of otherwise inaccessible systems.
 
 ## Hardware Reverse Engineering Fundamentals

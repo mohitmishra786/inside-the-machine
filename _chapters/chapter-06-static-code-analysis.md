@@ -7,8 +7,6 @@ order: 6
 ---
 
 
-*Part 2: Disassembly and Analysis*
-
 In this chapter, we'll explore advanced static analysis techniques that help you move beyond basic disassembly to deeper program understanding. We'll examine how to identify functions, analyze control flow, recognize data structures, and detect common algorithms and library code. These techniques will help you work more efficiently and effectively as a reverse engineer.
 
 ## Beyond Basic Disassembly

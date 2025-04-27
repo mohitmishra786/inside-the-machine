@@ -7,8 +7,6 @@ order: 13
 ---
 
 
-*Part 5: Practical Applications*
-
 Reverse engineering plays a crucial role in cybersecurity, serving as both a defensive and offensive tool. Security professionals use reverse engineering to uncover vulnerabilities, understand attack techniques, and develop effective protections. This chapter explores how reverse engineering techniques can be applied specifically to security challenges, providing practical approaches for vulnerability research, malware analysis, and security assessment.
 
 ## Vulnerability Research Fundamentals

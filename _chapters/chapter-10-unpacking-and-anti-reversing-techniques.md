@@ -7,8 +7,6 @@ order: 10
 ---
 
 
-*Part 4: Advanced Reverse Engineering*
-
 Software developers often employ various protection mechanisms to prevent reverse engineering of their code. These range from simple obfuscation to sophisticated packers and anti-debugging techniques. This chapter explores these protective measures and the methods reverse engineers use to overcome them. Understanding both sides of this technical battle provides valuable insights for both defensive and analytical purposes.
 
 ## Understanding Packed and Protected Software

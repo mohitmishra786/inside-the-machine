@@ -7,8 +7,6 @@ order: 3
 ---
 
 
-*Part 1: Reverse Engineering Fundamentals*
-
 In this chapter, we'll explore the essential tools and techniques that form the foundation of modern reverse engineering. Think of this as equipping your workshopu2014each tool has specific purposes, strengths, and limitations. Understanding when and how to use each one will dramatically increase your effectiveness as a reverse engineer.
 
 ## Building Your Reverse Engineering Toolkit

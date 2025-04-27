@@ -7,8 +7,6 @@ order: 12
 ---
 
 
-*Part 4: Advanced Reverse Engineering*
-
 Embedded systems present unique challenges and opportunities for reverse engineering. These specialized computing systems, designed for dedicated functions within larger devices, are ubiquitous in our worldu2014from consumer electronics and medical devices to industrial controllers and automotive systems. This chapter explores the specific techniques, tools, and approaches needed to effectively reverse engineer embedded systems, building on the hardware and software skills developed in previous chapters.
 
 ## Understanding Embedded Systems

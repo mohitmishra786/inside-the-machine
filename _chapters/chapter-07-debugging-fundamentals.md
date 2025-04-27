@@ -7,8 +7,6 @@ order: 7
 ---
 
 
-*Part 3: Dynamic Analysis*
-
 In this chapter, we'll explore the fundamentals of debugging as a reverse engineering technique. We'll examine how debuggers work, the different types available, and how to use them effectively to understand program behavior. Whether you're analyzing malware, fixing bugs, or learning how a program functions, debugging provides insights that static analysis alone cannot reveal.
 
 ## Understanding Debuggers

@@ -7,8 +7,6 @@ order: 4
 ---
 
 
-*Part 2: Disassembly and Analysis*
-
 Executable formats are the containers that hold program code and data in a structure the operating system can load and execute. They're the bridge between the source code a developer writes and the binary instructions a computer executes. Understanding these formats is fundamental to reverse engineering because they define how to locate and interpret the program's components.
 
 In this chapter, we'll explore the major executable formats across different platforms, examining their structures, components, and the information they provide to reverse engineers. We'll also look at how to extract and analyze this information using practical tools and techniques.

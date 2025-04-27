@@ -7,8 +7,6 @@ order: 9
 ---
 
 
-*Part 3: Dynamic Analysis*
-
 Understanding how programs organize and use memory is fundamental to reverse engineering. Memory structures reveal the architecture of a program, its data flow, and often its underlying algorithms. This chapter explores techniques for identifying, analyzing, and manipulating memory structures during dynamic analysis, providing insights that static analysis alone cannot reveal.
 
 ## Memory Organization Fundamentals

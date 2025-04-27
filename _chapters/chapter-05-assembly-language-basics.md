@@ -7,8 +7,6 @@ order: 5
 ---
 
 
-*Part 2: Disassembly and Analysis*
-
 In this chapter, we'll build a foundation for understanding assembly language across different architectures. Rather than attempting to be a comprehensive reference, we'll focus on the core concepts and patterns that will help you make sense of disassembled code in real-world reverse engineering scenarios.
 
 ## Understanding the CPU Architecture Model

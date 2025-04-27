@@ -7,8 +7,6 @@ order: 8
 ---
 
 
-*Part 3: Dynamic Analysis*
-
 Debugging is both an art and a science. While the previous chapter covered the fundamentals of how debuggers work, this chapter focuses on practical techniques that make debugging an effective reverse engineering tool. We'll explore methodologies that help you extract meaningful information from running programs, overcome common obstacles, and develop a systematic approach to understanding complex software behavior.
 
 ## Strategic Debugging Approaches

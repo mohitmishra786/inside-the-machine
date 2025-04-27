@@ -7,8 +7,6 @@ order: 1
 ---
 
 
-*Part 1: Reverse Engineering Fundamentals*
-
 Reverse engineering is that childhood curiosity formalized into a discipline. It's the process of extracting knowledge or design information from anything man-made and reproducing it based on the extracted information. The process often involves disassembling something (a mechanical device, electronic component, computer program, or biological, chemical, or organic matter) and analyzing its components and workings in detail.
 
 ## What Is Reverse Engineering?

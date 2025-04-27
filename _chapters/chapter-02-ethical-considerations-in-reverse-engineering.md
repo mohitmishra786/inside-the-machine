@@ -7,8 +7,6 @@ order: 2
 ---
 
 
-*Part 1: Reverse Engineering Fundamentals*
-
 The techniques you'll learn throughout this book can be used to secure systems, understand software, and advance knowledge. They can also be misused. The difference often lies not in the techniques themselves but in the ethical framework guiding their application.
 
 ## The Ethical Dimensions of Reverse Engineering

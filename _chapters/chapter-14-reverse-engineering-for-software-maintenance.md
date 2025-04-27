@@ -7,8 +7,6 @@ order: 14
 ---
 
 
-*Part 5: Practical Applications*
-
 Software maintenance is a critical aspect of the software development lifecycle, often consuming more resources than initial development. When source code is unavailable, incomplete, or outdated, reverse engineering becomes an essential tool for understanding, maintaining, and extending legacy systems. This chapter explores how reverse engineering techniques can be applied to software maintenance challenges, providing practical approaches for developers tasked with supporting and enhancing existing software.
 
 ## Understanding Legacy Systems

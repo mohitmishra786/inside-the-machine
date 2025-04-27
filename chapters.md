@@ -1,7 +1,13 @@
 ---
-layout: default
-title: Chapters
+layout: chapters
+title: Table of Contents
 ---
+
+<!-- This content will appear above the auto-generated table of contents -->
+<p class="intro-text">
+  Browse through all available chapters of "Inside the Machine". The book is organized into six parts, 
+  each focusing on different aspects of reverse engineering.
+</p>
 
 <div class="chapters-list">
   <h1>Table of Contents</h1>
