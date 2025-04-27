@@ -1,0 +1,59 @@
+---
+layout: default
+---
+
+<div class="home">
+  <section class="hero">
+    <h1>{{ site.title }}</h1>
+    <h2>{{ site.subtitle }}</h2>
+    <p class="lead">{{ site.description }}</p>
+    <div class="cta-buttons">
+      <a href="{{ '/chapters' | relative_url }}" class="btn primary">Start Reading</a>
+      <a href="{{ '/about' | relative_url }}" class="btn secondary">About the Book</a>
+    </div>
+  </section>
+
+  <section class="book-overview">
+    <h2>What's Inside</h2>
+    <div class="book-parts">
+      <div class="part">
+        <h3>Part 1: Reverse Engineering Fundamentals</h3>
+        <p>Introduction to core concepts, ethical considerations, and essential tools for reverse engineering.</p>
+      </div>
+      <div class="part">
+        <h3>Part 2: Disassembly and Analysis</h3>
+        <p>Understanding executable formats, assembly language basics, and static code analysis techniques.</p>
+      </div>
+      <div class="part">
+        <h3>Part 3: Dynamic Analysis and Debugging</h3>
+        <p>Exploring dynamic instrumentation, debugging techniques, and memory structure analysis.</p>
+      </div>
+      <div class="part">
+        <h3>Part 4: Advanced Reverse Engineering</h3>
+        <p>Tackling complex topics like unpacking, anti-reversing techniques, and hardware-assisted approaches.</p>
+      </div>
+      <div class="part">
+        <h3>Part 5: Practical Applications</h3>
+        <p>Applying reverse engineering to security, software maintenance, and malware analysis.</p>
+      </div>
+      <div class="part">
+        <h3>Part 6: Future of Reverse Engineering</h3>
+        <p>Exploring emerging trends, technologies, and the path forward in the field.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="author-section">
+    <h2>About the Author</h2>
+    <div class="author-info">
+      <div class="author-bio">
+        <p>Mohit Mishra is a software engineer and security researcher with extensive experience in reverse engineering. With a passion for understanding how systems work at their core, he has spent years exploring the inner workings of software and hardware.</p>
+        <p>Connect with the author:</p>
+        <ul class="social-links">
+          <li><a href="https://github.com/{{ site.author.github_username }}" target="_blank">GitHub</a></li>
+          <li><a href="mailto:{{ site.author.email }}">Email</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,53 @@
+# Site settings
+title: Inside the Machine
+subtitle: A Practical Approach to Reverse Engineering for Developers
+description: >-
+  A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies
+  to extract valuable insights from software systems.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://mohitmishra786.github.io/inside-the-machine" # the base hostname & protocol for your site
+
+# Author information
+author:
+  name: Mohit Mishra
+  email: immadmohit@gmail.com
+  github_username: mohitmishra786
+
+# Build settings
+markdown: kramdown
+highlight: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Collections
+collections:
+  chapters:
+    output: true
+    permalink: /:collection/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "chapters"
+    values:
+      layout: "chapter"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - LICENSE

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mohitmishra786.github.io/inside-the-machine/sitemap.xml

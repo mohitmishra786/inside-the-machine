@@ -1,0 +1,31 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <h2 class="footer-heading">{{ site.title }}</h2>
+        <p>{{ site.description }}</p>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Contact</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
+          <li><a href="https://github.com/{{ site.author.github_username }}">GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2 class="footer-heading">Quick Links</h2>
+        <ul class="page-list">
+          <li><a href="{{ '/' | relative_url }}">Home</a></li>
+          <li><a href="{{ '/chapters' | relative_url }}">Chapters</a></li>
+          <li><a href="{{ '/about' | relative_url }}">About</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; {{ site.time | date: '%Y' }} {{ site.author.name }}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

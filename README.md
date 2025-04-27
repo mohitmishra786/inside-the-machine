@@ -4,6 +4,19 @@
 
 This book serves as a guide to the art of reverse engineering. It explores various techniques and strategies to extract valuable insights from software systems, with the goal of enhancing understanding, improving software quality, and addressing complex challenges.
 
+## Book Website
+
+The book is available as a Jekyll-based website at: [https://mohitmishra786.github.io/inside-the-machine](https://mohitmishra786.github.io/inside-the-machine)
+
+The website features:
+- Minimalist design focused on readability
+- Dark/light mode toggle
+- Mobile-responsive layout
+- Syntax highlighting for code blocks
+- Easy navigation between chapters
+
+For information about the website implementation, see [README-WEBSITE.md](README-WEBSITE.md).
+
 ## Table of Contents
 
 ### Part 1: Reverse Engineering Fundamentals
@@ -45,7 +58,7 @@ This repository is licensed under the MIT License - see the [LICENSE](LICENSE) f
 
 ## How to Contact Us
 
-For additional information, updates, or support related to this book, please visit the webpage (hosted via github pages): **NOT YET AVAILABLE**
+For additional information, updates, or support related to this book, please visit the webpage: [https://mohitmishra786.github.io/inside-the-machine](https://mohitmishra786.github.io/inside-the-machine)
 
 Email [immadmohit@gmail.com](mailto:immadmohit@gmail.com) to comment or ask technical questions about this book.
 
