@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 3: Reverse Engineering Tools and Techniques
-part: Part 1: Reverse Engineering Fundamentals
+title: "Chapter 3: Reverse Engineering Tools and Techniques"
+part: "Part 1: Reverse Engineering Fundamentals"
 order: 3
 ---
 
@@ -853,4 +853,3 @@ In the next chapter, we'll build on this foundation by exploring executable file
 
 4. **Tool Combination Challenge**: Choose a simple network client application. Use a combination of static analysis, dynamic analysis, and network monitoring tools to understand how it communicates with its server. Document the protocol format based solely on your reverse engineering.
 
-5. **Obfuscation Experiment**: Write a simple program, then apply basic obfuscation techniques (string encryption, control flow obfuscation). Exchange your obfuscated program with a classmate or colleague and attempt to reverse engineer each other's programs. Discuss the challenges and effective approaches.

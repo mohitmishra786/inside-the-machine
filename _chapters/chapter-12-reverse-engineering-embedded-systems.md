@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 12: Reverse Engineering Embedded Systems
-part: Part 4: Advanced Reverse Engineering
+title: "Chapter 12: Reverse Engineering Embedded Systems"
+part: "Part 4: Advanced Reverse Engineering"
 order: 12
 ---
 
@@ -1267,4 +1267,3 @@ Reverse engineering embedded systems requires a unique combination of hardware a
 
 Mastering embedded reverse engineering enables you to understand, analyze, and potentially modify the countless devices that power our modern world.
 
-In the next part of the book, we'll explore practical applications of reverse engineering, beginning with security analysis.

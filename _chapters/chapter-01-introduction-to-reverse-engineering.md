@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 1: Introduction to Reverse Engineering
-part: Part 1: Reverse Engineering Fundamentals
+title: "Chapter 1: Introduction to Reverse Engineering"
+part: "Part 1: Reverse Engineering Fundamentals"
 order: 1
 ---
 
@@ -267,4 +267,3 @@ In the next chapter, we'll delve deeper into the ethical and legal consideration
 
 5. **Research**: Find and read a case study of reverse engineering being used in a security context (vulnerability research, malware analysis, etc.). What techniques were used? What were the outcomes?
 
-These exercises will help you begin developing the practical skills and mindset needed for effective reverse engineering. Remember, the goal at this stage is familiarity and exploration, not mastery.

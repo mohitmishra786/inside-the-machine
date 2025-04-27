@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 13: Reverse Engineering for Security
-part: Part 5: Practical Applications
+title: "Chapter 13: Reverse Engineering for Security"
+part: "Part 5: Practical Applications"
 order: 13
 ---
 
@@ -1185,4 +1185,3 @@ Reverse engineering is a powerful tool for security professionals, enabling deep
 
 By mastering security-focused reverse engineering, you can better understand threats, develop effective protections, and contribute to a more secure digital ecosystem.
 
-In the next chapter, we'll explore how reverse engineering supports software maintenance and legacy system understanding.

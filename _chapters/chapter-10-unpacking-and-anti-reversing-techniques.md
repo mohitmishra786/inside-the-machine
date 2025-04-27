@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 10: Unpacking and Anti-Reversing Techniques
-part: Part 4: Advanced Reverse Engineering
+title: "Chapter 10: Unpacking and Anti-Reversing Techniques"
+part: "Part 4: Advanced Reverse Engineering"
 order: 10
 ---
 
@@ -832,4 +832,3 @@ Unpacking and bypassing anti-reversing measures are advanced skills that require
 
 Mastering these techniques allows you to analyze even heavily protected software, whether for security research, malware analysis, or other legitimate purposes.
 
-In the next chapter, we'll explore hardware-assisted reverse engineering, examining how specialized hardware tools can provide deeper insights into software behavior.

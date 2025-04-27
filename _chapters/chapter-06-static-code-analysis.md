@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 6: Static Code Analysis
-part: Part 2: Disassembly and Analysis
+title: "Chapter 6: Static Code Analysis"
+part: "Part 2: Disassembly and Analysis"
 order: 6
 ---
 
@@ -1297,4 +1297,3 @@ In the next chapter, we'll explore dynamic analysis techniques that complement s
 
 4. **Data Structure Reconstruction**: Find a binary that processes a structured file format. Through static analysis of its parsing functions, reconstruct the file format's structure and document it as C struct definitions.
 
-5. **Decompiler Evaluation**: Select a function from a binary with available source code. Decompile it using a tool like Ghidra or Hex-Rays, then compare the decompiled output with the original source. Identify discrepancies and explain why the decompiler might have generated different code.

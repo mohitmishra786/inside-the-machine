@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 9: Reverse Engineering Memory Structures
-part: Part 3: Dynamic Analysis and Debugging
+title: "Chapter 9: Reverse Engineering Memory Structures"
+part: "Part 3: Dynamic Analysis and Debugging"
 order: 9
 ---
 
@@ -693,4 +693,3 @@ Key skills developed in this chapter include:
 - Manipulating memory to alter program behavior
 - Applying forensic techniques to memory analysis
 
-In the next chapter, we'll explore unpacking and anti-reversing techniques, examining how programs protect themselves from the very analysis methods we've discussed.

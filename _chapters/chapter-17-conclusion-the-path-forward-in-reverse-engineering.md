@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 17: Conclusion: The Path Forward in Reverse Engineering
-part: Part 6: Future of Reverse Engineering
+title: "Chapter 17: Conclusion: The Path Forward in Reverse Engineering"
+part: "Part 6: Future of Reverse Engineering"
 order: 17
 ---
 
@@ -356,4 +356,3 @@ I wrote this book to share not just techniques but a mindsetu2014an approach to 
 
 *"The real voyage of discovery consists not in seeking new landscapes, but in having new eyes."* u2014 Marcel Proust
 
-Reverse engineering gives us those new eyesu2014a way to see beneath the surface of the technologies that shape our world. May your journey of discovery be rewarding.

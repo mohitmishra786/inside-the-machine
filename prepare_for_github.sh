@@ -4,20 +4,93 @@ echo "Preparing site for GitHub Pages..."
 
 # Step 1: Fix chapter front matter
 echo "Step 1: Fixing chapter front matter..."
-ruby fix_chapter_frontmatter.rb
+
+# Fix YAML front matter in chapter files
+for file in _chapters/chapter-*.md; do
+  if [ -f "$file" ]; then
+    echo "  Processing $file..."
+    # Create a temporary file
+    tmp_file="${file}.tmp"
+    
+    # Process the file line by line
+    in_frontmatter=false
+    frontmatter_start=false
+    
+    while IFS= read -r line; do
+      # Detect front matter boundaries
+      if [[ "$line" == "---" ]]; then
+        if [ "$in_frontmatter" = false ] && [ "$frontmatter_start" = false ]; then
+          in_frontmatter=true
+          frontmatter_start=true
+        elif [ "$in_frontmatter" = true ]; then
+          in_frontmatter=false
+        fi
+      fi
+      
+      # Fix title and part lines in front matter
+      if [ "$in_frontmatter" = true ]; then
+        if [[ "$line" =~ ^title:\ (.*):(.*)$ ]]; then
+          # Title contains a colon, wrap in quotes
+          title="${BASH_REMATCH[1]}:${BASH_REMATCH[2]}"
+          line="title: \"$title\""
+        elif [[ "$line" =~ ^part:\ (.*):(.*)$ ]]; then
+          # Part contains a colon, wrap in quotes
+          part="${BASH_REMATCH[1]}:${BASH_REMATCH[2]}"
+          line="part: \"$part\""
+        fi
+      fi
+      
+      # Write the line to the temporary file
+      echo "$line" >> "$tmp_file"
+    done < "$file"
+    
+    # Replace the original file with the fixed one
+    mv "$tmp_file" "$file"
+  fi
+done
 
 # Step 2: Clean up template and sample chapters
 echo "Step 2: Cleaning up template and sample chapters..."
-ruby cleanup_chapters.rb
+for file in "_chapters/chapter-template.md" "_chapters/sample-chapter.md"; do
+  if [ -f "$file" ]; then
+    echo "  Removing $file..."
+    rm "$file"
+  fi
+done
 
 # Step 3: Use GitHub Pages specific Gemfile
 echo "Step 3: Setting up GitHub Pages Gemfile..."
-if [ -f "Gemfile.github" ]; then
-  cp Gemfile.github Gemfile
-  echo "  Copied Gemfile.github to Gemfile"
-else
-  echo "  Warning: Gemfile.github not found"
-fi
+
+# Create a GitHub Pages compatible Gemfile
+cat > Gemfile << EOL
+source "https://rubygems.org"
+
+# Use GitHub Pages gem for compatibility
+gem "github-pages", group: :jekyll_plugins
+
+# Add faraday-retry for GitHub Pages
+gem "faraday-retry"
+
+# Additional plugins
+group :jekyll_plugins do
+  gem "jekyll-feed", "~> 0.15"
+  gem "jekyll-seo-tag", "~> 2.8"
+end
+
+# Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
+platforms :mingw, :x64_mingw, :mswin, :jruby do
+  gem "tzinfo", "~> 1.2"
+  gem "tzinfo-data"
+end
+
+# Performance-booster for watching directories on Windows
+gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
+
+# For Ruby 3.0+ compatibility
+gem "webrick", "~> 1.7"
+EOL
+
+echo "  Created GitHub Pages compatible Gemfile"
 
 # Step 4: Ensure the assets/css directory exists
 echo "Step 4: Setting up CSS..."

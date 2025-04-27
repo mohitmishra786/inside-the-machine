@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 2: Ethical Considerations in Reverse Engineering
-part: Part 1: Reverse Engineering Fundamentals
+title: "Chapter 2: Ethical Considerations in Reverse Engineering"
+part: "Part 1: Reverse Engineering Fundamentals"
 order: 2
 ---
 
@@ -395,4 +395,3 @@ In the next chapter, we'll build on this ethical foundation by exploring the pra
    - Your employer asks you to reverse engineer a competitor's product
    - You need to maintain legacy software where the vendor no longer exists
 
-5. **License Examination**: Examine the license agreements of three different software products (e.g., an operating system, a mobile app, and a development tool). Identify and compare their provisions regarding reverse engineering. How might these provisions affect legitimate research or interoperability efforts?

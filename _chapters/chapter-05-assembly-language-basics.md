@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 5: Assembly Language Basics
-part: Part 2: Disassembly and Analysis
+title: "Chapter 5: Assembly Language Basics"
+part: "Part 2: Disassembly and Analysis"
 order: 5
 ---
 
@@ -1009,4 +1009,3 @@ In the next chapter, we'll build on this foundation to explore static code analy
 
 4. **Calling Convention Analysis**: Examine a function with multiple parameters in disassembled code. Determine which calling convention it uses and how parameters are passed and returned.
 
-5. **Optimization Comparison**: Compile the same C function with different optimization levels (-O0, -O1, -O2, -O3). Compare the resulting assembly and document how optimizations affect the code structure and readability.

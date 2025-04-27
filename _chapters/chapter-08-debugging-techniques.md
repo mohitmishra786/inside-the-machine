@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 8: Debugging Techniques
-part: Part 3: Dynamic Analysis and Debugging
+title: "Chapter 8: Debugging Techniques"
+part: "Part 3: Dynamic Analysis and Debugging"
 order: 8
 ---
 
@@ -566,4 +566,3 @@ Key takeaways from this chapter include:
 
 Mastering these debugging techniques will significantly enhance your reverse engineering capabilities, allowing you to tackle increasingly complex targets with confidence and efficiency.
 
-In the next chapter, we'll explore memory structures in greater depth, examining how programs organize and manipulate data during execution.

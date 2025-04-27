@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 14: Reverse Engineering for Software Maintenance
-part: Part 5: Practical Applications
+title: "Chapter 14: Reverse Engineering for Software Maintenance"
+part: "Part 5: Practical Applications"
 order: 14
 ---
 
@@ -1529,4 +1529,3 @@ Key takeaways include:
 
 By applying these techniques, organizations can extend the useful life of critical systems, reduce maintenance costs, and plan for eventual migration to modern platforms. Reverse engineering transforms maintenance from a reactive, trial-and-error process to a systematic, knowledge-driven approach that preserves and enhances the value of existing software assets.
 
-In the next chapter, we'll explore how reverse engineering techniques can be applied to malware analysis, providing security professionals with the tools to understand and counter malicious software.

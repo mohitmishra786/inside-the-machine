@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 11: Hardware-Assisted Reverse Engineering
-part: Part 4: Advanced Reverse Engineering
+title: "Chapter 11: Hardware-Assisted Reverse Engineering"
+part: "Part 4: Advanced Reverse Engineering"
 order: 11
 ---
 
@@ -951,4 +951,3 @@ Hardware-assisted reverse engineering provides capabilities beyond what software
 
 Mastering hardware-assisted techniques complements software reverse engineering skills, enabling comprehensive analysis of complex systems from the physical layer up.
 
-In the next chapter, we'll explore reverse engineering of embedded systems, building on these hardware techniques to analyze specialized devices with unique constraints and architectures.

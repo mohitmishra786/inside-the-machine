@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 7: Debugging Fundamentals
-part: Part 3: Dynamic Analysis and Debugging
+title: "Chapter 7: Debugging Fundamentals"
+part: "Part 3: Dynamic Analysis and Debugging"
 order: 7
 ---
 
@@ -1522,4 +1522,3 @@ In the next chapter, we'll build on these debugging skills to explore dynamic bi
 
 6. **Debugger Scripting**: Write a debugger script (for GDB, WinDbg, or x64dbg) that automatically logs all calls to memory allocation functions along with their parameters and return values.
 
-7. **Protocol Reverse Engineering**: Use a debugger to analyze how a web browser constructs HTTP requests. Break on network functions and examine the buffers to understand the protocol structure.

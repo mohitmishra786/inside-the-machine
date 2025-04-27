@@ -1,7 +1,7 @@
 ---
 layout: chapter
-title: Chapter 4: Understanding Executable Formats
-part: Part 2: Disassembly and Analysis
+title: "Chapter 4: Understanding Executable Formats"
+part: "Part 2: Disassembly and Analysis"
 order: 4
 ---
 
@@ -1006,4 +1006,3 @@ With this foundation in executable formats, you're now prepared to dive deeper i
    - Observe how the change affects the file's behavior and how analysis tools interpret it
    - Restore the original value
 
-These exercises will help solidify your understanding of executable formats and provide practical experience with the analysis tools discussed in this chapter.
