@@ -110,20 +110,31 @@ The about.md file automatically calculates the book progress based on the number
 
 2. Make your changes (add/edit chapters, update content, etc.)
 
-3. Commit your changes:
+3. Run the GitHub Pages preparation script:
+   ```bash
+   ./prepare_for_github.sh
+   ```
+   This script will:
+   - Fix YAML front matter in chapter files
+   - Remove template and sample chapters
+   - Set up the proper Gemfile for GitHub Pages
+   - Ensure CSS is properly configured
+   - Update _config.yml if needed
+
+4. Commit your changes:
    ```bash
    git add .
    git commit -m "Add Chapter XX: Chapter Title"
    ```
 
-4. Push to GitHub:
+5. Push to GitHub:
    ```bash
    git push origin chapter-XX
    ```
 
-5. Create a Pull Request on GitHub to merge your changes into the main branch
+6. Create a Pull Request on GitHub to merge your changes into the main branch
 
-6. After review, merge the Pull Request
+7. After review, merge the Pull Request
 
 ### Automated Deployment
 

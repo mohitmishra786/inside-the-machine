@@ -4,7 +4,8 @@ gem "jekyll", "~> 4.2.0"
 
 # Specify FFI version to avoid issues on macOS
 gem "ffi", "~> 1.15.5"
-
+# Add faraday-retry for GitHub Pages
+gem "faraday-retry"
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
   gem "jekyll-seo-tag", "~> 2.7"

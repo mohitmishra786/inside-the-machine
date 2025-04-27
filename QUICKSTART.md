@@ -66,18 +66,24 @@ docker run --rm \
 
 ## Pushing Updates to GitHub
 
-1. Commit your changes:
+1. Run the GitHub Pages preparation script:
+   ```bash
+   ./prepare_for_github.sh
+   ```
+   This script fixes common issues with GitHub Pages deployment.
+
+2. Commit your changes:
    ```bash
    git add .
    git commit -m "Add Chapter X: Chapter Title"
    ```
 
-2. Push to GitHub:
+3. Push to GitHub:
    ```bash
    git push origin main
    ```
 
-3. GitHub Actions will automatically build and deploy your site
+4. GitHub Actions will automatically build and deploy your site
 
 ## Checking Build Status
 
