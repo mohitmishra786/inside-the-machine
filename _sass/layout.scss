@@ -1,0 +1,18 @@
+// Container
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+// Page layout
+.page-content {
+  padding: 30px 0;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+} 

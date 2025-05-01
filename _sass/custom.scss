@@ -1,0 +1,161 @@
+// Basic styling
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+// Header
+.site-header {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 20px 0;
+  margin-bottom: 30px;
+}
+
+.site-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.site-nav {
+  float: right;
+  
+  a {
+    margin-left: 20px;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Chapter styling
+.chapter {
+  margin-bottom: 40px;
+}
+
+.chapter-header {
+  margin-bottom: 30px;
+}
+
+.chapter-content {
+  img {
+    max-width: 100%;
+  }
+  
+  pre, code {
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    background-color: #f6f8fa;
+    border-radius: 3px;
+  }
+  
+  pre {
+    padding: 16px;
+    overflow: auto;
+  }
+  
+  code {
+    padding: 0.2em 0.4em;
+  }
+}
+
+.chapter-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e8e8e8;
+  
+  a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f6f8fa;
+    border-radius: 4px;
+    text-decoration: none;
+    
+    &:hover {
+      background-color: #e1e4e8;
+    }
+  }
+}
+
+// Chapters list
+.chapters-page {
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    margin-top: 30px;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 8px;
+  }
+  
+  ul {
+    padding-left: 20px;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+}
+
+// Home page
+.hero {
+  text-align: center;
+  margin: 60px 0;
+  
+  h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  
+  h2 {
+    font-size: 24px;
+    font-weight: normal;
+    margin-bottom: 20px;
+  }
+  
+  .cta-buttons {
+    margin-top: 30px;
+    
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      background-color: #f6f8fa;
+      
+      &:hover {
+        background-color: #e1e4e8;
+      }
+      
+      &.primary {
+        background-color: #0366d6;
+        color: white;
+        
+        &:hover {
+          background-color: #0055b3;
+        }
+      }
+    }
+  }
+}
+
+// Footer
+.site-footer {
+  border-top: 1px solid #e8e8e8;
+  padding: 20px 0;
+  margin-top: 40px;
+  text-align: center;
+} 

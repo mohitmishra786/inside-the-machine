@@ -16,13 +16,13 @@ layout: default
 
   <nav class="chapter-navigation">
     {% if page.previous %}
-    <a href="{{ page.previous.url | relative_url }}" class="prev">&laquo; {{ page.previous.title }}</a>
+    <a href="{{ page.previous.url | relative_url }}" class="prev">Previous: {{ page.previous.title }}</a>
     {% endif %}
     
     <a href="{{ '/chapters' | relative_url }}" class="toc">Table of Contents</a>
     
     {% if page.next %}
-    <a href="{{ page.next.url | relative_url }}" class="next">{{ page.next.title }} &raquo;</a>
+    <a href="{{ page.next.url | relative_url }}" class="next">Next: {{ page.next.title }}</a>
     {% endif %}
   </nav>
-</article>
+</article> 

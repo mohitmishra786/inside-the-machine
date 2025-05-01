@@ -1,4 +1,4 @@
-name: Build and deploy Jekyll site to GitHub Pages
+name: GitHub Pages
 
 on:
   push:
@@ -6,28 +6,25 @@ on:
       - main
 
 jobs:
-  github-pages:
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-      
-      # Run our combined preparation script
-      - name: Prepare site for GitHub Pages
-        run: |
-          chmod +x ./prepare_for_github.sh
-          ./prepare_for_github.sh
-      
-      # Use Jekyll build pages action
-      - name: Build Jekyll site
-        uses: actions/jekyll-build-pages@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          source: ./
-          destination: ./_site
-      
-      # Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
+          ruby-version: '3.0'
+          bundler-cache: true
+
+      - name: Build
+        run: |
+          gem install bundler
+          bundle install
+          bundle exec jekyll build
+
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

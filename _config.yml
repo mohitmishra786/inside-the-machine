@@ -4,11 +4,11 @@ subtitle: A Practical Approach to Reverse Engineering for Developers
 description: >
   A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies
   to extract valuable insights from software systems.
-baseurl: "/inside-the-machine" # the subpath of your site, e.g. /blog
-url: "https://mohitmishra786.github.io" # the base hostname & protocol for your site
+baseurl: "/inside-the-machine"
+url: "https://mohitmishra786.github.io"
 
 # Theme settings
-theme: jekyll-theme-primer
+theme: minima
 
 # Author information
 author:
@@ -18,10 +18,14 @@ author:
 
 # Build settings
 markdown: kramdown
-highlight: rouge
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+
+# Sass/SCSS
+sass:
+  sass_dir: _sass
+  style: compressed
 
 # Collections
 collections:
@@ -36,11 +40,6 @@ defaults:
       type: "chapters"
     values:
       layout: "chapter"
-  - scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "post"
   - scope:
       path: ""
     values:

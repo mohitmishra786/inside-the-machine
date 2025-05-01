@@ -1,67 +1,28 @@
-# Inside the Machine: A Practical Approach to Reverse Engineering for Developers
+# Inside the Machine
 
-> **Note:** This book will be just dump of what i know and what i feel like should be known by others
+A comprehensive guide to the art of reverse engineering, exploring various techniques and strategies to extract valuable insights from software systems.
 
-This book serves as a guide to the art of reverse engineering. It explores various techniques and strategies to extract valuable insights from software systems, with the goal of enhancing understanding, improving software quality, and addressing complex challenges.
+## About
 
-## Book Website
+This repository contains the source code for the "Inside the Machine" book website.
 
-The book is available as a Jekyll-based website at: [https://mohitmishra786.github.io/inside-the-machine](https://mohitmishra786.github.io/inside-the-machine)
+## Local Development
 
-The website features:
-- Minimalist design focused on readability
-- Dark/light mode toggle
-- Mobile-responsive layout
-- Syntax highlighting for code blocks
-- Easy navigation between chapters
+To run this site locally:
 
-For information about the website implementation, see [README-WEBSITE.md](README-WEBSITE.md).
+1. Install Ruby and Bundler
+2. Clone this repository
+3. Run `bundle install` to install dependencies
+4. Run `bundle exec jekyll serve` to start the local server
+5. Visit `http://localhost:4000/inside-the-machine/` in your browser
 
-## Table of Contents
+## Structure
 
-### Part 1: Reverse Engineering Fundamentals
-- Chapter 1: Introduction to Reverse Engineering
-- Chapter 2: Ethical Considerations in Reverse Engineering
-- Chapter 3: Reverse Engineering Tools and Techniques
-
-### Part 2: Disassembly and Analysis
-- Chapter 4: Understanding Executable Formats
-- Chapter 5: Assembly Language Basics
-- Chapter 6: Static Code Analysis
-
-### Part 3: Dynamic Analysis and Debugging
-- Chapter 7: Dynamic Instrumentation
-- Chapter 8: Debugging Techniques
-- Chapter 9: Reverse Engineering Memory Structures
-
-### Part 4: Advanced Reverse Engineering
-- Chapter 10: Unpacking and Anti-Reversing Techniques
-- Chapter 11: Hardware-Assisted Reverse Engineering
-- Chapter 12: Reverse Engineering Embedded Systems
-
-### Part 5: Practical Applications
-- Chapter 13: Reverse Engineering for Security
-- Chapter 14: Reverse Engineering for Software Maintenance
-- Chapter 15: Reverse Engineering for Malware Analysis
-
-### Part 6: Future of Reverse Engineering
-- Chapter 16: Emerging Trends and Technologies
-- Chapter 17: Conclusion: The Path Forward in Reverse Engineering
-
-## Preface
-
-[PREFACE.md](PREFACE.md)
+- `_chapters/`: Contains all chapter markdown files
+- `_layouts/`: Contains layout templates
+- `assets/css/`: Contains CSS files
+- `Part-X-*/`: Contains the original chapter files (not used by Jekyll)
 
 ## License
 
-This repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## How to Contact Us
-
-For additional information, updates, or support related to this book, please visit the webpage: [https://mohitmishra786.github.io/inside-the-machine](https://mohitmishra786.github.io/inside-the-machine)
-
-Email [immadmohit@gmail.com](mailto:immadmohit@gmail.com) to comment or ask technical questions about this book.
-
-## Copyright
-
-Copyright ©chessMan786 2024. All rights reserved.
+Copyright © Mohit Mishra. All rights reserved.

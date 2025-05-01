@@ -2,28 +2,23 @@
 layout: default
 ---
 
-<div class="table-of-contents">
-  <h1>{{ page.title | default: "Table of Contents" }}</h1>
+<div class="chapters-page">
+  <h1>{{ page.title }}</h1>
   
   {{ content }}
   
-  <div class="parts-container">
-    {% assign chapters_by_part = site.chapters | group_by: "part" | sort: "name" %}
-    
-    {% for part in chapters_by_part %}
-      {% if part.name != "" %}
-        <section class="part-section">
-          <h2>{{ part.name }}</h2>
-          <ul class="chapter-list">
-            {% assign sorted_chapters = part.items | sort: "order" %}
-            {% for chapter in sorted_chapters %}
-              <li>
-                <a href="{{ chapter.url | relative_url }}">{{ chapter.title }}</a>
-              </li>
-            {% endfor %}
-          </ul>
-        </section>
-      {% endif %}
+  <div class="chapters-list">
+    {% assign parts = site.chapters | group_by: "part" | sort: "name" %}
+    {% for part in parts %}
+      <h2>{{ part.name }}</h2>
+      <ul>
+        {% assign chapters = part.items | sort: "order" %}
+        {% for chapter in chapters %}
+          <li>
+            <a href="{{ chapter.url | relative_url }}">{{ chapter.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
     {% endfor %}
   </div>
 </div> 
